@@ -258,12 +258,9 @@ idx_error_t idx_validate(const char *data, size_t size) {
     return IDX_NO_ERROR;
 }
 
-static char *idx_lookup_ptr_va(
-    const char *data, size_t size, uint8_t ndims, va_list indexes
+static size_t idx_data_offset_va(
+    const char *data, uint8_t ndims, va_list indexes
 ) {
-    // Check that size matches what is expected given the type.
-    assert(size == idx_type_size(idx_type(data)));
-
     // Check that number of dimensions match.
     assert(idx_ndims(data) == ndims);
 
@@ -281,16 +278,7 @@ static char *idx_lookup_ptr_va(
 
     va_end(indexes);
 
-    // Get pointer to value.
-    char *ptr = data;
-    // The magic number.
-    ptr += sizeof(uint32_t);
-    // The dimension sizes.
-    ptr += sizeof(uint32_t) * ndims;
-    // The offset of the value into the data.
-    ptr += size * offset;
-
-    return ptr;
+    return offset;
 }
 
 #define IDX_GET_FN(TYPE)                                                      \
@@ -302,9 +290,15 @@ IDX_CTYPE(TYPE) IDX_CONCAT(idx_get_, IDX_FNAME(TYPE))(                        \
                                                                               \
     assert(idx_type(data) == IDX_TYPE(TYPE));                                 \
                                                                               \
-    const char *ptr = idx_lookup_ptr_va(                                      \
-        data, IDX_SIZE(TYPE), ndims, indexes                                  \
+    size_t offset = idx_data_offset_va(                                       \
+        data, ndims, indexes                                                  \
     );                                                                        \
+                                                                              \
+    const char *ptr = &data[                                                  \
+        4 + 4 * ndims +                                                       \
+        offset * IDX_SIZE(TYPE)                                               \
+    ];                                                                        \
+                                                                              \
     return IDX_CONCAT(idx_read_, IDX_FNAME(TYPE))(ptr);                       \
 }
 
@@ -324,9 +318,15 @@ void IDX_CONCAT(idx_set_, IDX_FNAME(TYPE))(                                   \
                                                                               \
     assert(idx_type(data) == IDX_TYPE(TYPE));                                 \
                                                                               \
-    char *ptr = idx_lookup_ptr_va(                                            \
-        data, IDX_SIZE(TYPE), ndims, indexes                                  \
+    size_t offset = idx_data_offset_va(                                       \
+        data, ndims, indexes                                                  \
     );                                                                        \
+                                                                              \
+    char *ptr = &data[                                                        \
+        4 + 4 * ndims +                                                       \
+        offset * IDX_SIZE(TYPE)                                               \
+    ];                                                                        \
+                                                                              \
     IDX_CONCAT(idx_write_, IDX_FNAME(TYPE))(value, ptr);                      \
 }
 
