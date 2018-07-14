@@ -160,7 +160,7 @@ size_t idx_bound(const char *data, uint8_t dim) {
     return (size_t) idx_read_uint32(data + 4 + 4 * dim);
 }
 
-idx_error_t idx_size(size_t *size, idx_type_t type, uint8_t ndims, ...) {
+size_t idx_size(idx_type_t type, uint8_t ndims, ...) {
     // Magic number.
     size_t header_size = 4;
     
@@ -174,18 +174,16 @@ idx_error_t idx_size(size_t *size, idx_type_t type, uint8_t ndims, ...) {
     for (int dim = 0; dim < ndims; dim++) {
         uint32_t bound = va_arg(bounds, uint32_t);
         if (SIZE_MAX / bound > data_size) {
-            return IDX_ERROR_OVERFLOW;
+            return 0;
         }
         data_size *= bound;
     }
 
     if ((SIZE_MAX - header_size) < data_size) {
-        return IDX_ERROR_OVERFLOW;
+        return 0;
     }
 
-    *size = header_size + data_size;
-
-    return IDX_NO_ERROR;
+    return header_size + data_size;
 }
 
 void idx_init(char *data, idx_type_t type, uint8_t ndims, ...) {
@@ -204,7 +202,6 @@ void idx_init(char *data, idx_type_t type, uint8_t ndims, ...) {
     }
 
     assert((SIZE_MAX - data_size) >= 4);
-
 }
 
 idx_error_t idx_validate(const char *data, size_t size) {

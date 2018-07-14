@@ -21,7 +21,7 @@ idx_type_t idx_type(const char *data);
 uint8_t idx_ndims(const char *data);
 size_t idx_bound(const char *data, uint8_t dim);
 
-idx_error_t idx_size(size_t *size, idx_type_t type, uint8_t ndims, ...);
+size_t idx_size(idx_type_t type, uint8_t ndims, ...);
 void idx_init(char *data, idx_type_t type, uint8_t ndims, ...);
 
 idx_error_t idx_validate(const char *data, size_t len);
