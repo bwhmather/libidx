@@ -55,26 +55,26 @@ static size_t idx_type_size(idx_type_t type) {
     }
 }
 
-static inline uint8_t idx_read_uint8(const char bytes[1]) {
+static inline uint8_t idx_read_uint8(const uint8_t bytes[1]) {
     return (uint8_t) bytes[0];
 }
 
-static inline int8_t idx_read_int8(const char bytes[1]) {
+static inline int8_t idx_read_int8(const uint8_t bytes[1]) {
     return (int8_t) bytes[0];
 }
 
-static inline uint16_t idx_read_uint16(const char bytes[2]) {
+static inline uint16_t idx_read_uint16(const uint8_t bytes[2]) {
     return (
         ((uint16_t) bytes[0] << 8) |
         ((uint16_t) bytes[1] << 0)
     );
 }
 
-static inline int16_t idx_read_int16(const char bytes[4]) {
+static inline int16_t idx_read_int16(const uint8_t bytes[4]) {
     return (int16_t) idx_read_uint16(bytes);
 }
 
-static inline uint32_t idx_read_uint32(const char bytes[4]) {
+static inline uint32_t idx_read_uint32(const uint8_t bytes[4]) {
     return (
         ((uint32_t) bytes[0] << 24) |
         ((uint32_t) bytes[1] << 16) |
@@ -83,15 +83,15 @@ static inline uint32_t idx_read_uint32(const char bytes[4]) {
     );
 }
 
-static inline int32_t idx_read_int32(const char bytes[4]) {
+static inline int32_t idx_read_int32(const uint8_t bytes[4]) {
     return (int32_t) idx_read_uint32(bytes);
 }
 
-static inline float idx_read_float(const char bytes[4]) {
+static inline float idx_read_float(const uint8_t bytes[4]) {
     return (float) idx_read_uint32(bytes);
 }
 
-static inline double idx_read_double(const char bytes[8]) {
+static inline double idx_read_double(const uint8_t bytes[8]) {
     return (double) (
         ((uint64_t) bytes[0] << 56) |
         ((uint64_t) bytes[1] << 48) |
@@ -104,39 +104,39 @@ static inline double idx_read_double(const char bytes[8]) {
     );
 }
 
-static inline void idx_write_uint8(uint8_t value, char bytes[1]) {
+static inline void idx_write_uint8(uint8_t value, uint8_t bytes[1]) {
     bytes[0] = (char) value;
 }
 
-static inline void idx_write_int8(int8_t value, char bytes[1]) {
+static inline void idx_write_int8(int8_t value, uint8_t bytes[1]) {
     bytes[0] = (char) value;
 }
 
-static inline void idx_write_uint16(uint16_t value, char bytes[2]) {
+static inline void idx_write_uint16(uint16_t value, uint8_t bytes[2]) {
     bytes[0] = (0xff00 & value) >> 8;
     bytes[1] = (0x00ff & value) >> 0;
 }
 
-static inline void idx_write_int16(int16_t value, char bytes[2]) {
+static inline void idx_write_int16(int16_t value, uint8_t bytes[2]) {
     idx_write_uint16((uint16_t) value, bytes);
 }
 
-static inline void idx_write_uint32(uint32_t value, char bytes[4]) {
+static inline void idx_write_uint32(uint32_t value, uint8_t bytes[4]) {
     bytes[0] = (0xff000000 & value) >> 24;
     bytes[1] = (0x00ff0000 & value) >> 16;
     bytes[2] = (0x0000ff00 & value) >> 8;
     bytes[3] = (0x000000ff & value) >> 0;
 }
 
-static inline void idx_write_int32(int32_t value, char bytes[4]) {
+static inline void idx_write_int32(int32_t value, uint8_t bytes[4]) {
     idx_write_uint32((uint32_t) value, bytes);
 }
 
-static inline void idx_write_float(float value, char bytes[4]) {
+static inline void idx_write_float(float value, uint8_t bytes[4]) {
     idx_write_uint32((float) value, bytes);
 }
 
-static inline void idx_write_double(double value, char bytes[8]) {
+static inline void idx_write_double(double value, uint8_t bytes[8]) {
     bytes[0] = (0xff00000000000000 & (uint64_t) value) >> 56;
     bytes[1] = (0x00ff000000000000 & (uint64_t) value) >> 48;
     bytes[2] = (0x0000ff0000000000 & (uint64_t) value) >> 40;
@@ -147,17 +147,20 @@ static inline void idx_write_double(double value, char bytes[8]) {
     bytes[7] = (0x00000000000000ff & (uint64_t) value) >> 0;
 }
 
-idx_type_t idx_type(const char *data) {
-    return (idx_type_t) data[2];
+idx_type_t idx_type(const void *data) {
+    const uint8_t *bytes = (const uint8_t *) data;
+    return (idx_type_t) bytes[2];
 }
 
-uint8_t idx_ndims(const char *data) {
-    return data[3];
+uint8_t idx_ndims(const void *data) {
+    const uint8_t *bytes = (const uint8_t *) data;
+    return bytes[3];
 }
 
-size_t idx_bound(const char *data, uint8_t dim) {
+size_t idx_bound(const void *data, uint8_t dim) {
     assert(dim < idx_ndims(data));
-    return (size_t) idx_read_uint32(data + 4 + 4 * dim);
+    const uint8_t *bytes = (const uint8_t *) data;
+    return (size_t) idx_read_uint32(&bytes[4 + 4 * dim]);
 }
 
 size_t idx_size(idx_type_t type, uint8_t ndims, ...) {
@@ -186,10 +189,12 @@ size_t idx_size(idx_type_t type, uint8_t ndims, ...) {
     return header_size + data_size;
 }
 
-void idx_init(char *data, idx_type_t type, uint8_t ndims, ...) {
-    idx_write_uint16(0, &data[0]);
-    idx_write_uint8(type, &data[2]);
-    idx_write_uint8(ndims, &data[3]);
+void idx_init(void *data, idx_type_t type, uint8_t ndims, ...) {
+    uint8_t *bytes = (uint8_t *) data;
+
+    idx_write_uint16(0, &bytes[0]);
+    idx_write_uint8(type, &bytes[2]);
+    idx_write_uint8(ndims, &bytes[3]);
 
     va_list bounds;
     va_start(bounds, ndims);
@@ -198,22 +203,24 @@ void idx_init(char *data, idx_type_t type, uint8_t ndims, ...) {
     for (int dim = 0; dim < ndims; dim++) {
         uint32_t bound = va_arg(bounds, uint32_t);
         assert(SIZE_MAX / bound <= data_size);
-        idx_write_uint32(bound, &data[4 + 4 * dim]);
+        idx_write_uint32(bound, &bytes[4 + 4 * dim]);
     }
 
     assert((SIZE_MAX - data_size) >= 4);
 }
 
-idx_error_t idx_validate(const char *data, size_t size) {
+idx_error_t idx_validate(const void *data, size_t size) {
+    const uint8_t *bytes = (const uint8_t *) data;
+
     // Check that length is long enough to contain magic number.
     if (size < 4) {
         return IDX_ERROR_TRUNCATED;
     }
     
     // Parse the header.
-    uint16_t magic = idx_read_uint16(&data[0]);
-    idx_type_t type = (idx_type_t) idx_read_uint8(&data[2]);
-    uint8_t ndims = idx_read_uint8(&data[3]);
+    uint16_t magic = idx_read_uint16(&bytes[0]);
+    idx_type_t type = (idx_type_t) idx_read_uint8(&bytes[2]);
+    uint8_t ndims = idx_read_uint8(&bytes[3]);
 
     // Check that the first two bytes are zero.
     if (magic != 0) {
@@ -240,8 +247,8 @@ idx_error_t idx_validate(const char *data, size_t size) {
     // Check length.
     size_t expected_length = 1;
     for (int dim = 0; dim < ndims; dim++) {
-        uint32_t bound = idx_read_uint32(&data[4 + (4 * dim)]);
-        if (SIZE_MAX / bound > expected_length) {
+        uint32_t bound = idx_read_uint32(&bytes[4 + (4 * dim)]);
+        if (SIZE_MAX / bound < expected_length) {
             return IDX_ERROR_OVERFLOW;
         }
         expected_length *= bound;
@@ -268,7 +275,7 @@ const char *idx_error_string(idx_error_t error) {
 }
 
 static size_t idx_data_offset_va(
-    const char *data, uint8_t ndims, va_list indexes
+    const void *data, uint8_t ndims, va_list indexes
 ) {
     // Check that number of dimensions match.
     assert(idx_ndims(data) == ndims);
@@ -292,7 +299,7 @@ static size_t idx_data_offset_va(
 
 #define IDX_GET_FN(TYPE)                                                      \
 IDX_CTYPE(TYPE) IDX_CONCAT(idx_get_, IDX_FNAME(TYPE))(                        \
-    const char *data, uint8_t ndims, ...                                      \
+    const void *data, uint8_t ndims, ...                                      \
 ) {                                                                           \
     va_list indexes;                                                          \
     va_start(indexes, ndims);                                                 \
@@ -303,12 +310,13 @@ IDX_CTYPE(TYPE) IDX_CONCAT(idx_get_, IDX_FNAME(TYPE))(                        \
         data, ndims, indexes                                                  \
     );                                                                        \
                                                                               \
-    const char *ptr = &data[                                                  \
+    const uint8_t *bytes = (const uint8_t *) data;                            \
+    const uint8_t *element = &bytes[                                          \
         4 + 4 * ndims +                                                       \
         offset * IDX_SIZE(TYPE)                                               \
     ];                                                                        \
                                                                               \
-    return IDX_CONCAT(idx_read_, IDX_FNAME(TYPE))(ptr);                       \
+    return IDX_CONCAT(idx_read_, IDX_FNAME(TYPE))(element);                   \
 }
 
 IDX_GET_FN(UINT8)
@@ -320,7 +328,7 @@ IDX_GET_FN(DOUBLE)
 
 #define IDX_SET_FN(TYPE)                                                      \
 void IDX_CONCAT(idx_set_, IDX_FNAME(TYPE))(                                   \
-    char *data, IDX_CTYPE(TYPE) value, uint8_t ndims, ...                     \
+    void *data, IDX_CTYPE(TYPE) value, uint8_t ndims, ...                     \
 ) {                                                                           \
     va_list indexes;                                                          \
     va_start(indexes, ndims);                                                 \
@@ -331,12 +339,13 @@ void IDX_CONCAT(idx_set_, IDX_FNAME(TYPE))(                                   \
         data, ndims, indexes                                                  \
     );                                                                        \
                                                                               \
-    char *ptr = &data[                                                        \
+    uint8_t *bytes = (uint8_t *) data;                                        \
+    uint8_t *element = &bytes[                                                \
         4 + 4 * ndims +                                                       \
         offset * IDX_SIZE(TYPE)                                               \
     ];                                                                        \
                                                                               \
-    IDX_CONCAT(idx_write_, IDX_FNAME(TYPE))(value, ptr);                      \
+    IDX_CONCAT(idx_write_, IDX_FNAME(TYPE))(value, element);                  \
 }
 
 IDX_SET_FN(UINT8)
