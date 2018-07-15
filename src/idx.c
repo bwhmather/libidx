@@ -176,7 +176,7 @@ size_t idx_size(idx_type_t type, uint8_t ndims, ...) {
     size_t data_size = idx_type_size(type);
     for (int dim = 0; dim < ndims; dim++) {
         uint32_t bound = va_arg(bounds, uint32_t);
-        if (SIZE_MAX / bound > data_size) {
+        if (bound > SIZE_MAX / data_size) {
             return 0;
         }
         data_size *= bound;
@@ -202,7 +202,7 @@ void idx_init(void *data, idx_type_t type, uint8_t ndims, ...) {
     size_t data_size = idx_type_size(type);
     for (int dim = 0; dim < ndims; dim++) {
         uint32_t bound = va_arg(bounds, uint32_t);
-        assert(SIZE_MAX / bound <= data_size);
+        assert(bound > SIZE_MAX / data_size);
         idx_write_uint32(bound, &bytes[4 + 4 * dim]);
     }
 
@@ -248,7 +248,7 @@ idx_error_t idx_validate(const void *data, size_t size) {
     size_t expected_length = 1;
     for (int dim = 0; dim < ndims; dim++) {
         uint32_t bound = idx_read_uint32(&bytes[4 + (4 * dim)]);
-        if (SIZE_MAX / bound < expected_length) {
+        if (bound > SIZE_MAX / expected_length) {
             return IDX_ERROR_OVERFLOW;
         }
         expected_length *= bound;
