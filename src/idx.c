@@ -217,7 +217,7 @@ idx_error_t idx_validate(const char *data, size_t size) {
 
     // Check that the first two bytes are zero.
     if (magic != 0) {
-        return IDX_ERROR_BAD_HEADER;
+        return IDX_ERROR_BAD_PADDING;
     }
 
     // Check type code is valid.
@@ -229,7 +229,7 @@ idx_error_t idx_validate(const char *data, size_t size) {
         type != IDX_TYPE_FLOAT &&
         type != IDX_TYPE_DOUBLE
     ) {
-        return IDX_ERROR_BAD_HEADER;
+        return IDX_ERROR_UNKNOWN_TYPE_CODE;
     }
 
     // Check that there is at least enough space to store the dimensions.
@@ -240,7 +240,7 @@ idx_error_t idx_validate(const char *data, size_t size) {
     // Check length.
     size_t expected_length = 1;
     for (int dim = 0; dim < ndims; dim++) {
-        uint32_t bound = idx_read_uint32(data + 4 + 4 * dim);
+        uint32_t bound = idx_read_uint32(&data[4 + (4 * dim)]);
         if (SIZE_MAX / bound > expected_length) {
             return IDX_ERROR_OVERFLOW;
         }
@@ -256,10 +256,12 @@ const char *idx_error_string(idx_error_t error) {
         return "no error";
     case IDX_ERROR_TRUNCATED:
         return "truncated";
-    case IDX_ERROR_BAD_HEADER:
-        return "bad header";
     case IDX_ERROR_OVERFLOW:
         return "overflow";
+    case IDX_ERROR_BAD_PADDING:
+        return "bad padding";
+    case IDX_ERROR_UNKNOWN_TYPE_CODE:
+        return "unknown type code";
     default:
         return "unknown error";
     }

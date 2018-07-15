@@ -4,7 +4,8 @@
 typedef enum {
     IDX_NO_ERROR = 0,
     IDX_ERROR_TRUNCATED,
-    IDX_ERROR_BAD_HEADER,
+    IDX_ERROR_BAD_PADDING,
+    IDX_ERROR_UNKNOWN_TYPE_CODE,
     IDX_ERROR_OVERFLOW,
 } idx_error_t;
 
