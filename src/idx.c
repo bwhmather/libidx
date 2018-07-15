@@ -232,11 +232,6 @@ idx_error_t idx_validate(const char *data, size_t size) {
         return IDX_ERROR_BAD_HEADER;
     }
 
-    // Check that number of dimensions is at least one.
-    if (ndims < 1) {
-        return IDX_ERROR_BAD_HEADER;
-    }
-
     // Check that there is at least enough space to store the dimensions.
     if (size < 4 + (size_t) ndims * 4) {
         return IDX_ERROR_TRUNCATED;
