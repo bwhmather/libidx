@@ -58,6 +58,8 @@ void idx_init(char *data, idx_type_t type, uint8_t ndims, ...);
  */
 idx_error_t idx_validate(const char *data, size_t len);
 
+const char *idx_error_string(idx_error_t error);
+
 /**
  * Functions to retrieve a value at a given index in the idx structure.
  * These do not verify that the structure is valid.  All getters will abort if

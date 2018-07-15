@@ -255,6 +255,21 @@ idx_error_t idx_validate(const char *data, size_t size) {
     return IDX_NO_ERROR;
 }
 
+const char *idx_error_string(idx_error_t error) {
+    switch (error) {
+    case IDX_NO_ERROR:
+        return "no error";
+    case IDX_ERROR_TRUNCATED:
+        return "truncated";
+    case IDX_ERROR_BAD_HEADER:
+        return "bad header";
+    case IDX_ERROR_OVERFLOW:
+        return "overflow";
+    default:
+        return "unknown error";
+    }
+}
+
 static size_t idx_data_offset_va(
     const char *data, uint8_t ndims, va_list indexes
 ) {
