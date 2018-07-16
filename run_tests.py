@@ -26,7 +26,7 @@ def call_in_proc(fn, *args, **kwargs):
     rpipe, wpipe = multiprocessing.Pipe(duplex=False)
     proc = multiprocessing.Process(
         target=_call_worker, daemon=True,
-        args=(fn, wpipe, *args), kwargs=kwargs,
+        args=[fn, wpipe] + list(args), kwargs=kwargs,
     )
     proc.start()
     proc.join()
