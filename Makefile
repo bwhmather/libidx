@@ -1,8 +1,9 @@
-PROJECT :=mnist
+PROJECT :=idx
 VERSION :=0.0.1
 
 PREFIX ?=/usr/local
 CC ?=cc
+PYTHON ?= python3
 
 MAKEFLAGS += --no-builtin-rules
 
@@ -31,7 +32,7 @@ LDFLAGS += -Wl,--as-needed
 LDFLAGS += -Wl,--no-undefined
 
 
-# Default target
+## Default rule.
 default: all
 
 
@@ -51,51 +52,8 @@ $(LIB_OUT): $(LIB_OBJS)
 	$(CC) -shared $(CFLAGS) $(LDFLAGS) $(LIB_OBJS) -o $@
 
 
-## Test rules.
-TEST_SRCS := $(wildcard test/**/*.c test/*.c)
-TEST_DIRS := $(patsubst test%,build/test%,$(shell find test -type d))
-TEST_OBJS := $(patsubst test/%.c,build/test/%.o,$(TEST_SRCS))
-TEST_DEPS := $(patsubst test/%.c,build/test/%.d,$(TEST_SRCS))
-TEST_OUT := build/run-lib$(PROJECT)-tests
-
-$(TEST_OBJS) : build/test/%.o : test/%.c
-	@mkdir -p $(TEST_DIRS)
-	$(CC) $(CFLAGS) -c $< -o $@ -MMD
--include ${TEST_DEPS}
-
-$(TEST_OUT): $(LIB_OUT) $(TEST_OBJS)
-	$(CC) $(CFLAGS) \
-		$(LDFLAGS) $(LIBS) \
-		$(TEST_OBJS) \
-		-Lbuild -lmnist -Wl,-rpath=./build -lcriterion \
-		-o $@
-
-test: $(TEST_OUT)
-	./build/run-libmnist-tests --full-stats --verbose=0
-
-
-## Executable rules.
-BIN_SRCS := main.c
-BIN_DIRS := build/bin
-BIN_OBJS := build/bin/main.o
-BIN_DEPS := build/bin/main.d
-BIN_OUT := build/$(PROJECT)
-
-$(BIN_OBJS) : build/bin/%.o : %.c
-	@mkdir -p $(BIN_DIRS)
-	$(CC) $(CFLAGS) -c $< -o $@ -MMD
--include ${BIN_DEPS}
-
-$(BIN_OUT): $(LIB_OUT) $(BIN_OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(LIBS) $(BIN_OBJS) -o $@ -Lbuild -lmnist
-
-
-all: $(BIN_OUT) $(LIB_OUT) $(TEST_OUT)
-
-
 ## Distribution
 clean:
-	rm -f $(BIN_OUT)
 	rm -Rf build/
 	rm -Rf $(PROJECT)-$(VERSION)
 
@@ -104,5 +62,7 @@ dist: clean
 	cp -r LICENSE Makefile README.mkd src/ include/ $(PROJECT)-$(VERSION)/
 	tar -czf $(PROJECT)-$(VERSION).tar.gz $(PROJECT)-$(VERSION)
 
+
+all: $(LIB_OUT)
 .PHONY: clean dist all
 
