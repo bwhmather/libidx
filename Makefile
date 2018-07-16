@@ -52,6 +52,11 @@ $(LIB_OUT): $(LIB_OBJS)
 	$(CC) -shared $(CFLAGS) $(LDFLAGS) $(LIB_OBJS) -o $@
 
 
+## Test rules.
+test: $(LIB_OUT)
+	$(PYTHON) ./run_tests.py
+
+
 ## Distribution
 clean:
 	rm -Rf build/
@@ -64,5 +69,5 @@ dist: clean
 
 
 all: $(LIB_OUT)
-.PHONY: clean dist all
+.PHONY: clean dist all test
 
