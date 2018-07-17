@@ -67,14 +67,14 @@ size_t idx_bound(const void *data, uint8_t dim);
  * represented by `size_t`.  Should be called to figure out how much space to
  * allocate before calling `idx_init`.
  */
-size_t idx_size(idx_type_t type, uint8_t ndims, ...);
+size_t idx_size(idx_type_t type, int ndims, ...);
 
 /**
  * Writes an idx header with the given settings to `data` and clears the
  * remaining space.  The amount of memory that this function requires can be
  * figured out by calling `idx_size` with the same settings.
  */
-void idx_init(void *data, idx_type_t type, uint8_t ndims, ...);
+void idx_init(void *data, idx_type_t type, int ndims, ...);
 
 /**
  * Checks that `data` points to a consistent idx structure that takes up `len`
@@ -91,12 +91,12 @@ const char *idx_error_string(idx_error_t error);
  * the type or number of dimensions do not match, or if the requested element
  * is out of bounds.
  */
-uint8_t idx_get_uint8(const void *data, uint8_t ndims, ...);
-int8_t idx_get_int8(const void *data, uint8_t ndims, ...);
-int16_t idx_get_int16(const void *data, uint8_t ndims, ...);
-int32_t idx_get_int32(const void *data, uint8_t ndims, ...);
-float idx_get_float(const void *data, uint8_t ndims, ...);
-double idx_get_double(const void *data, uint8_t ndims, ...);
+uint8_t idx_get_uint8(const void *data, int ndims, ...);
+int8_t idx_get_int8(const void *data, int ndims, ...);
+int16_t idx_get_int16(const void *data, int ndims, ...);
+int32_t idx_get_int32(const void *data, int ndims, ...);
+float idx_get_float(const void *data, int ndims, ...);
+double idx_get_double(const void *data, int ndims, ...);
 
 /**
  * Functions to overwrite elements in an idx data-structure with new data.
@@ -105,10 +105,10 @@ double idx_get_double(const void *data, uint8_t ndims, ...);
  * structure, or if the `ndims` does not match the actual number of dimensions.
  * do not match those requested, or if the requested element is out of bounds.
  */
-void idx_set_uint8(void *data, uint8_t value, uint8_t ndims, ...);
-void idx_set_int8(void *data, int8_t value, uint8_t ndims, ...);
-void idx_set_int16(void *data, int16_t value, uint8_t ndims, ...);
-void idx_set_int32(void *data, int32_t value, uint8_t ndims, ...);
-void idx_set_float(void *data, float value, uint8_t ndims, ...);
-void idx_set_double(void *data, double value, uint8_t ndims, ...);
+void idx_set_uint8(void *data, uint8_t value, int ndims, ...);
+void idx_set_int8(void *data, int8_t value, int ndims, ...);
+void idx_set_int16(void *data, int16_t value, int ndims, ...);
+void idx_set_int32(void *data, int32_t value, int ndims, ...);
+void idx_set_float(void *data, float value, int ndims, ...);
+void idx_set_double(void *data, double value, int ndims, ...);
 

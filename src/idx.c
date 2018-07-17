@@ -185,7 +185,12 @@ size_t idx_bound(const void *data, uint8_t dim) {
     return (size_t) idx_read_uint32(&bytes[4 + 4 * dim]);
 }
 
-size_t idx_size(idx_type_t type, uint8_t ndims, ...) {
+size_t idx_size(idx_type_t type, int ndims, ...) {
+    // Check that ndims can safely be stored as a uint8.
+    if (ndims < 0 || ndims > 255) {
+        return 0;
+    }
+
     // Magic number.
     size_t header_size = 4;
     
@@ -211,8 +216,9 @@ size_t idx_size(idx_type_t type, uint8_t ndims, ...) {
     return header_size + data_size;
 }
 
-void idx_init(void *data, idx_type_t type, uint8_t ndims, ...) {
+void idx_init(void *data, idx_type_t type, int ndims, ...) {
     uint8_t *bytes = (uint8_t *) data;
+    assert(ndims >= 0 && ndims <= 255);
 
     idx_write_uint16(0, &bytes[0]);
     idx_write_uint8(type, &bytes[2]);
@@ -297,7 +303,7 @@ const char *idx_error_string(idx_error_t error) {
 }
 
 static size_t idx_data_offset_va(
-    const void *data, uint8_t ndims, va_list indexes
+    const void *data, int ndims, va_list indexes
 ) {
     // Check that number of dimensions match.
     assert(idx_ndims(data) == ndims);
@@ -321,7 +327,7 @@ static size_t idx_data_offset_va(
 
 #define IDX_GET_FN(TYPE)                                                      \
 IDX_CTYPE(TYPE) IDX_CONCAT(idx_get_, IDX_FNAME(TYPE))(                        \
-    const void *data, uint8_t ndims, ...                                      \
+    const void *data, int ndims, ...                                          \
 ) {                                                                           \
     va_list indexes;                                                          \
     va_start(indexes, ndims);                                                 \
@@ -350,7 +356,7 @@ IDX_GET_FN(DOUBLE)
 
 #define IDX_SET_FN(TYPE)                                                      \
 void IDX_CONCAT(idx_set_, IDX_FNAME(TYPE))(                                   \
-    void *data, IDX_CTYPE(TYPE) value, uint8_t ndims, ...                     \
+    void *data, IDX_CTYPE(TYPE) value, int ndims, ...                         \
 ) {                                                                           \
     va_list indexes;                                                          \
     va_start(indexes, ndims);                                                 \
