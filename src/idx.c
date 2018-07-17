@@ -291,6 +291,8 @@ const char *idx_error_string(idx_error_t error) {
         return "no error";
     case IDX_ERROR_TRUNCATED:
         return "truncated";
+    case IDX_ERROR_OVERALLOCATED:
+        return "overallocated";
     case IDX_ERROR_OVERFLOW:
         return "overflow";
     case IDX_ERROR_BAD_PADDING:
