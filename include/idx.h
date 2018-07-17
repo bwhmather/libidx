@@ -27,9 +27,20 @@
 
 typedef enum {
     IDX_NO_ERROR = 0,
+    // Indicates that the buffer in which an idx data-structure is meant to be
+    // stored is shorter than needed.
     IDX_ERROR_TRUNCATED,
+    // Indicates that the buffer in which an idx data-structure is stored
+    // is too big, and contains extra data at the end.
+    IDX_ERROR_OVERALLOCATED,
+    // Indicates that the two empty bytes at the beginning of the structure
+    // contain something other than zeroes.
     IDX_ERROR_BAD_PADDING,
+    // Indicates that the idx data-structure contains values of an unsupported
+    // type.
     IDX_ERROR_UNKNOWN_TYPE_CODE,
+    // Indicates that the length of the data-structure exceeds what can be
+    // represented by a `size_t`.
     IDX_ERROR_OVERFLOW,
 } idx_error_t;
 
