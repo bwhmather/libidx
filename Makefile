@@ -17,6 +17,7 @@ CFLAGS += -Wall -Wextra -pedantic
 
 # Debug specific flags.
 CFLAGS_DBG := $(CFLAGS)
+CFLAGS_DBG += -Werror
 CFLAGS_DBG += -O0
 
 # Production specific flags.
