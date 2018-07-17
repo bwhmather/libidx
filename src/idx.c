@@ -282,6 +282,14 @@ idx_error_t idx_validate(const void *data, size_t size) {
         expected_length *= bound;
     }
 
+    if (expected_length > size) {
+        return IDX_ERROR_TRUNCATED;
+    }
+
+    if (expected_length < size) {
+        return IDX_ERROR_OVERALLOCATED;
+    }
+
     return IDX_NO_ERROR;
 }
 
