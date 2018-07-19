@@ -1,5 +1,5 @@
-Python Mnemonicode
-==================
+LibIDX
+======
 
 |build-status| |coverage|
 
