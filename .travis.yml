@@ -15,7 +15,7 @@ jobs:
       script:
         - make test
       after_success:
-        - coveralls --gcov-options '\-lpo build/lib'
+        - coveralls -i src/idx.c --gcov-options '\-lpo build/lib'
       env:
         - DEBUG=1
         - COVERAGE=1
