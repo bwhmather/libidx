@@ -27,6 +27,11 @@ ifdef DEBUG
 CFLAGS := $(CFLAGS_DBG)
 endif
 
+ifdef COVERAGE
+CFLAGS += -fprofile-arcs
+CFLAGS += -ftest-coverage
+endif
+
 
 ## Linker options.
 LDFLAGS += -Wl,--as-needed
