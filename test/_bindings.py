@@ -25,14 +25,20 @@ def idx_bound(data, dim):
     return _lib.idx_bound(ctypes.c_char_p(data), ctypes.c_uint8(dim))
 
 
-def idx_size(type_code, dimensions):
+def idx_size(type_code, *bounds):
     _lib.idx_size.restype = ctypes.c_size_t
-    return _lib.idx_size(ctypes.c_int(type_code), ctypes.c_uint8(dimensions))
+    return _lib.idx_size(
+        ctypes.c_int(type_code), ctypes.c_int(len(bounds)),
+        *[ctypes.c_int32(bound) for bound in bounds],
+    )
 
 
-def idx_init(type_code, dimensions):
+def idx_init(type_code, *bounds):
     _lib.idx_init.restype = None
-    return _lib.idx_init(ctypes.c_int(type_code), ctypes.c_uint8(dimensions))
+    return _lib.idx_init(
+        ctypes.c_int(type_code), ctypes.c_int(len(bounds)),
+        *[ctypes.c_int32(bound) for bound in bounds],
+    )
 
 
 def idx_validate(data, size):
