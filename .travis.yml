@@ -5,6 +5,7 @@ env: CFLAGS=-Werror
 compiler:
   - clang
   - gcc
+
 jobs:
   include:
     - stage: coverage
@@ -15,4 +16,6 @@ jobs:
         - make test
       after_success:
         - coveralls --gcov-options '\-lpo build/lib'
-      env: COVERAGE=1
+      env:
+        - DEBUG=1
+        - COVERAGE=1
