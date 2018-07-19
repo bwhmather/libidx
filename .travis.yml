@@ -1,6 +1,18 @@
 language: c
-script: make test
+script:
+  - make test
+env: CFLAGS=-Werror
 compiler:
   - clang
   - gcc
-env: CFLAGS=-Werror
+jobs:
+  include:
+    - stage: coverage
+      compiler: gcc
+      install:
+        - pip install --user cpp-coveralls
+      script:
+        - make test
+      after_success:
+        - coveralls --gcov-options '\-lpo build/lib'
+      env: COVERAGE=1
