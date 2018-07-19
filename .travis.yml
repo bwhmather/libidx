@@ -9,7 +9,12 @@ compiler:
 jobs:
   include:
     - stage: coverage
-      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-7
       install:
         - pip install --user cpp-coveralls
       script:
@@ -17,5 +22,6 @@ jobs:
       after_success:
         - coveralls -i src/idx.c --gcov-options '\-lpo build/lib'
       env:
+        - CC=gcc-7
         - DEBUG=1
         - COVERAGE=1
