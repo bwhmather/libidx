@@ -98,7 +98,7 @@ def idx_size(type_code, *bounds):
     _lib.idx_size.restype = ctypes.c_size_t
     return _lib.idx_size(
         _int32_t(type_code), _int32_t(len(bounds)),
-        *[_uint32_t(bound) for bound in bounds],
+        *[_uint32_t(bound) for bound in bounds]
     )
 
 
@@ -106,7 +106,7 @@ def idx_init(type_code, *bounds):
     _lib.idx_init.restype = None
     return _lib.idx_init(
         _int32_t(type_code), _int32_t(len(bounds)),
-        *[_uint32_t(bound) for bound in bounds],
+        *[_uint32_t(bound) for bound in bounds]
     )
 
 
