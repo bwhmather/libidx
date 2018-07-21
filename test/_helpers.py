@@ -1,13 +1,13 @@
 import multiprocessing
 
 
-class AbnormalExitError(Exception):
-    pass
-
-
 def _call_worker(fn, pipe, *args, **kwargs):
-    result = fn(*args, **kwargs)
-    pipe.send(result)
+    try:
+        result = fn(*args, **kwargs)
+    except Exception as error:
+        pipe.send((None, error))
+    else:
+        pipe.send((result, None))
     pipe.close()
 
 
@@ -19,6 +19,14 @@ def call_in_proc(fn, *args, **kwargs):
     )
     proc.start()
     proc.join()
+    if proc.exitcode == -6:
+        raise AssertionError("c assertion failed")
     if proc.exitcode != 0:
-        raise AbnormalExitError(proc.exitcode)
-    return rpipe.recv()
+        raise RuntimeError((
+            "subprocedure exited with exit code {code}"
+        ).format(code=proc.exitcode))
+
+    result, error = rpipe.recv()
+    if error:
+        raise error
+    return result
