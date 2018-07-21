@@ -1,4 +1,5 @@
 import ctypes
+import enum
 import os
 
 
@@ -9,6 +10,15 @@ _lib_path = os.path.join(
     'libidx.so',
 )
 _lib = ctypes.cdll.LoadLibrary(_lib_path)
+
+
+class IdxType(enum.IntEnum):
+    IDX_TYPE_UINT8 = 0x08
+    IDX_TYPE_INT8 = 0x09
+    IDX_TYPE_INT16 = 0x0B
+    IDX_TYPE_INT32 = 0x0C
+    IDX_TYPE_FLOAT = 0x0D
+    IDX_TYPE_DOUBLE = 0x0E
 
 
 def _uint8_t(value):
