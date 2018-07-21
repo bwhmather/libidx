@@ -12,6 +12,9 @@ _lib_path = os.path.join(
 _lib = ctypes.cdll.LoadLibrary(_lib_path)
 
 
+MAX_SIZE_T = 2 ** (ctypes.sizeof(ctypes.c_size_t) * 8) - 1
+
+
 class IdxType(enum.IntEnum):
     IDX_TYPE_UINT8 = 0x08
     IDX_TYPE_INT8 = 0x09
