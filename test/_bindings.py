@@ -60,9 +60,17 @@ def _uint32_t(value):
 
 
 def _int32_t(value):
-    if -2**32 >= value >= 2**32:
+    result = ctypes.c_int32(value)
+    if result.value != value:
         raise ValueError(value)
-    return ctypes.c_int(value)
+    return result
+
+
+def _int_t(value):
+    result = ctypes.c_int(value)
+    if result.value != value:
+        raise ValueError(value)
+    return result
 
 
 def _float_t(value):
@@ -97,7 +105,7 @@ def idx_bound(data, dim):
 def idx_size(type_code, *bounds):
     _lib.idx_size.restype = ctypes.c_size_t
     return _lib.idx_size(
-        _int32_t(type_code), _int32_t(len(bounds)),
+        _int_t(type_code), _int_t(len(bounds)),
         *[_uint32_t(bound) for bound in bounds]
     )
 
@@ -105,7 +113,7 @@ def idx_size(type_code, *bounds):
 def idx_init(type_code, *bounds):
     _lib.idx_init.restype = None
     return _lib.idx_init(
-        _int32_t(type_code), _int32_t(len(bounds)),
+        _int_t(type_code), _int_t(len(bounds)),
         *[_uint32_t(bound) for bound in bounds]
     )
 
