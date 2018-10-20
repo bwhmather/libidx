@@ -94,6 +94,12 @@ void idx_init(void *data, idx_type_t type, int ndims, ...);
  */
 idx_error_t idx_validate(const void *data, size_t len);
 
+/**
+ * Returns a pointer to a static null terminated string containing the human
+ * readable name for a particular error code.  If the error code is not
+ * recognized will return "unknown error".  All strings are noun phrases with
+ * no capitalisation and no terminating full stop or newline.
+ */
 const char *idx_error_string(idx_error_t error);
 
 /**
