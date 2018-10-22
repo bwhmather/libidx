@@ -120,3 +120,8 @@ def idx_init(type_code, *bounds):
 
 def idx_validate(data, size):
     return _lib.idx_validate(ctypes.c_char_p(data), _size_t(size))
+
+
+def idx_error_string(error_code):
+    _lib.idx_error_string.restype = ctypes.c_char_p
+    return _lib.idx_error_string(_int_t(error_code))
