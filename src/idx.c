@@ -169,22 +169,6 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     bytes[7] = (0x00000000000000ff & (uint64_t) value) >> 0;
 }
 
-idx_type_t idx_type(const void *data) {
-    const uint8_t *bytes = (const uint8_t *) data;
-    return (idx_type_t) bytes[2];
-}
-
-uint8_t idx_ndims(const void *data) {
-    const uint8_t *bytes = (const uint8_t *) data;
-    return bytes[3];
-}
-
-size_t idx_bound(const void *data, uint8_t dim) {
-    assert(dim < idx_ndims(data));
-    const uint8_t *bytes = (const uint8_t *) data;
-    return (size_t) idx_read_uint32(&bytes[4 + 4 * dim]);
-}
-
 size_t idx_size(idx_type_t type, int ndims, ...) {
     // Check that ndims can safely be stored as a uint8.
     if (ndims < 0 || ndims > 255) {
@@ -310,6 +294,22 @@ const char *idx_error_string(idx_error_t error) {
     default:
         return "unknown error";
     }
+}
+
+idx_type_t idx_type(const void *data) {
+    const uint8_t *bytes = (const uint8_t *) data;
+    return (idx_type_t) bytes[2];
+}
+
+uint8_t idx_ndims(const void *data) {
+    const uint8_t *bytes = (const uint8_t *) data;
+    return bytes[3];
+}
+
+size_t idx_bound(const void *data, uint8_t dim) {
+    assert(dim < idx_ndims(data));
+    const uint8_t *bytes = (const uint8_t *) data;
+    return (size_t) idx_read_uint32(&bytes[4 + 4 * dim]);
 }
 
 static size_t idx_data_offset_va(
