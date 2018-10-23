@@ -54,25 +54,6 @@ typedef enum {
 } idx_type_t;
 
 /**
- * Returns the type code of the idx structure pointed to by `data`.
- * Expects that `data` points to a validated idx structure.
- */
-idx_type_t idx_type(const void *data);
-
-/**
- * Returns the number of dimensions of that information stored in `data`.
- * Expects that `data` points to a validated idx structure.
- */
-uint8_t idx_ndims(const void *data);
-
-/**
- * Returns the extent of the data in a given dimension.
- * Does not verify that `data` is a valid idx structure.
- * Will abort the process if the data contains fewer than `dim` dimensions.
- */
-size_t idx_bound(const void *data, uint8_t dim);
-
-/**
  * Calculates the number of bytes required to store an idx data-structure with
  * the requested settings.  Will return 0 if the number exceeds what can be
  * represented by `size_t`.  Should be called to figure out how much space to
@@ -101,6 +82,25 @@ idx_error_t idx_validate(const void *data, size_t len);
  * no capitalisation and no terminating full stop or newline.
  */
 const char *idx_error_string(idx_error_t error);
+
+/**
+ * Returns the type code of the idx structure pointed to by `data`.
+ * Expects that `data` points to a validated idx structure.
+ */
+idx_type_t idx_type(const void *data);
+
+/**
+ * Returns the number of dimensions of that information stored in `data`.
+ * Expects that `data` points to a validated idx structure.
+ */
+uint8_t idx_ndims(const void *data);
+
+/**
+ * Returns the extent of the data in a given dimension.
+ * Does not verify that `data` is a valid idx structure.
+ * Will abort the process if the data contains fewer than `dim` dimensions.
+ */
+size_t idx_bound(const void *data, uint8_t dim);
 
 /**
  * Functions to retrieve a value at a given index in the idx structure.
