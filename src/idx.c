@@ -171,6 +171,15 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
 
 idx_type_t idx_type(const void *data) {
     const uint8_t *bytes = (const uint8_t *) data;
+    uint8_t type_byte = bytes[2];
+    assert(
+        type_byte == 0x08 ||
+        type_byte == 0x09 ||
+        type_byte == 0x0B ||
+        type_byte == 0x0C ||
+        type_byte == 0x0D ||
+        type_byte == 0x0E
+    );
     return (idx_type_t) bytes[2];
 }
 
