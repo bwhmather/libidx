@@ -1,0 +1,6 @@
+#include "idx.h"
+
+
+int main(int argc, char **argv) {
+    return 77;
+}
