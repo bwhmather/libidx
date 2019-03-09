@@ -25,33 +25,61 @@
 #include <stdint.h>
 #include <stddef.h>
 
-typedef enum {
-    IDX_NO_ERROR = 0,
-    // Indicates that the buffer in which an idx data-structure is meant to be
-    // stored is shorter than needed.
-    IDX_ERROR_TRUNCATED,
-    // Indicates that the buffer in which an idx data-structure is stored
-    // is too big, and contains extra data at the end.
-    IDX_ERROR_OVERALLOCATED,
-    // Indicates that the two empty bytes at the beginning of the structure
-    // contain something other than zeroes.
-    IDX_ERROR_BAD_PADDING,
-    // Indicates that the idx data-structure contains values of an unsupported
-    // type.
-    IDX_ERROR_UNKNOWN_TYPE_CODE,
-    // Indicates that the length of the data-structure exceeds what can be
-    // represented by a `size_t`.
-    IDX_ERROR_OVERFLOW,
-} idx_error_t;
+/**
+ * Type used for describing issues detected during validation.
+ * These can be passed to `idx_error_string` to get a human readable
+ * description.  As, apart from `IDX_NO_ERROR`, these all indicate an issue
+ * with input to an application, it is not expected that calling code will be
+ * able to recover automatically and so no guarantee is made that the same
+ * error code will be returned for the same invalid data.  More values may be
+ * added in future to improve error reporting, but this should not affect ABI
+ * compatibility.
+ */
+typedef int idx_error_t;
 
-typedef enum {
-    IDX_TYPE_UINT8 = 0x08,
-    IDX_TYPE_INT8 = 0x09,
-    IDX_TYPE_INT16 = 0x0B,
-    IDX_TYPE_INT32 = 0x0C,
-    IDX_TYPE_FLOAT = 0x0D,
-    IDX_TYPE_DOUBLE = 0x0E,
-} idx_type_t;
+/**
+ * Indicates that the data was found to be valid.
+ */
+#define IDX_NO_ERROR 0
+
+/**
+ * Indicates that the buffer in which an idx data-structure is meant to be
+ * stored is shorter than needed.
+ */
+#define IDX_ERROR_TRUNCATED 1
+
+/**
+ * Indicates that the buffer in which an idx data-structure is stored is too
+ * big, and contains extra data at the end.
+ */
+#define IDX_ERROR_OVERALLOCATED 2
+
+/**
+ * Indicates that the two empty bytes at the beginning of the structure
+ * contain something other than zeroes.
+ */
+#define IDX_ERROR_BAD_PADDING 3
+
+/**
+ * Indicates that the idx data-structure contains values of an unsupported
+ * type.
+ */
+#define IDX_ERROR_UNKNOWN_TYPE_CODE 4
+
+/**
+ * Indicates that the length of the data-structure exceeds what can be
+ * represented by a `size_t`.
+ */
+#define IDX_ERROR_OVERFLOW 5
+
+typedef int idx_type_t;
+
+#define IDX_TYPE_UINT8 0x08
+#define IDX_TYPE_INT8 0x09
+#define IDX_TYPE_INT16 0x0B
+#define IDX_TYPE_INT32 0x0C
+#define IDX_TYPE_FLOAT 0x0D
+#define IDX_TYPE_DOUBLE 0x0E
 
 /**
  * Calculates the number of bytes required to store an idx data-structure with
