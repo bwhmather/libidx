@@ -22,7 +22,7 @@ test_suites = {
   ],
   'idx_error_string': [
     'known',
-    'random',
+    'unknown',
   ],
   'idx_size': [
     'uint8_0d',
