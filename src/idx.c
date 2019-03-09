@@ -73,7 +73,7 @@ static size_t idx_type_size(IdxType type) {
     case IDX_TYPE_DOUBLE:
         return 8;
     default:
-        assert(false);
+        return 0;
     }
 }
 
@@ -200,6 +200,12 @@ size_t idx_size(IdxType type, int ndims, ...) {
         return 0;
     }
 
+    size_t data_size = idx_type_size(type);
+    if (data_size == 0) {
+        // Unrecognized type code.
+        return 0;
+    }
+
     // Magic number.
     size_t header_size = 4;
     
@@ -209,7 +215,6 @@ size_t idx_size(IdxType type, int ndims, ...) {
     va_list bounds;
     va_start(bounds, ndims);
 
-    size_t data_size = idx_type_size(type);
     for (int dim = 0; dim < ndims; dim++) {
         uint32_t bound = va_arg(bounds, uint32_t);
         if (bound > SIZE_MAX / data_size) {
