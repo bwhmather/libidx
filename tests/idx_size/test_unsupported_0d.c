@@ -5,7 +5,7 @@
 #include <limits.h>
 
 
-int main(int argc, char **argv) {
+int main(void) {
     for (IdxType type = INT_MIN; type < INT_MAX; type++) {
         if (
             (type == IDX_TYPE_UINT8) ||

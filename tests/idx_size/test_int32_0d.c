@@ -7,7 +7,7 @@
 #include "idx_test.h"
 
 
-int main(int argc, char **argv) {
+int main(void) {
     size_t size = idx_size(IDX_TYPE_INT32, 0);
     idx_assert(size == 8);
 

@@ -8,7 +8,7 @@
 #include "idx_test.h"
 
 
-int main(int argc, char **argv) {
+int main(void) {
     // Assumes that `size_t` is 64 bits.
     // Constants are the prime factors of 2^64 - 26.  With a header for 6
     // dimensions, this is 22 bytes too large to be described by a `size_t`.

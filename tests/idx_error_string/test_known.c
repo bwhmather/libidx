@@ -8,7 +8,7 @@
 #include <string.h>
 
 
-int main(int argc, char **argv) {
+int main(void) {
     idx_assert(!strcmp(
         idx_error_string(IDX_NO_ERROR),
         "no error"

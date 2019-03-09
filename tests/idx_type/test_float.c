@@ -7,7 +7,7 @@
 #include "idx_test.h"
 
 
-int main(int argc, char **argv) {
+int main(void) {
     IdxType type_code = idx_type("\x00\x00\x0D\x00\xFE");
     idx_assert(type_code == IDX_TYPE_FLOAT);
 

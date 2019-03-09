@@ -7,7 +7,7 @@
 #include "idx_test.h"
 
 
-int main(int argc, char **argv) {
+int main(void) {
     idx_assert_aborts(idx_type("\x00\x00\x0A\x00\xFE"));
 
     return 0;

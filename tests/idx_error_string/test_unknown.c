@@ -5,7 +5,7 @@
 #include <limits.h>
 
 
-int main(int argc, char **argv) {
+int main(void) {
     for (IdxError err = INT_MIN; err < INT_MAX; err++) {
         if (err >= 0 && err <= 5) {
             continue;

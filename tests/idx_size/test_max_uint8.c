@@ -7,7 +7,7 @@
 #include "idx_test.h"
 
 
-int main(int argc, char **argv) {
+int main(void) {
     // Assumes that `size_t` is 64 bits.
     // Constants are derived from the prime factors of 2^64 - 25.
     // -25 is enough for 1 byte to stay in bounds plus 5 * 4 bytes to store
