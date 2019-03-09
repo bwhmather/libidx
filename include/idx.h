@@ -84,8 +84,9 @@ typedef int IdxType;
 /**
  * Calculates the number of bytes required to store an idx data-structure with
  * the requested settings.  Will return 0 if the number exceeds what can be
- * represented by `size_t`.  Should be called to figure out how much space to
- * allocate before calling `idx_init`.
+ * represented by `size_t`, or if type is not recognized or not supported.
+ * Should be called to figure out how much space to allocate before calling
+ * `idx_init`.
  */
 size_t idx_size(IdxType type, int ndims, ...);
 
