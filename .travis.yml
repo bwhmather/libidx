@@ -19,6 +19,6 @@ matrix:
     - env: CC=clang
 
 script:
-  - meson build
+  - meson build --warnlevel=3 --werror
   - meson test -C build --print-errorlogs
 
