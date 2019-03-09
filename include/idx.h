@@ -35,7 +35,7 @@
  * added in future to improve error reporting, but this should not affect ABI
  * compatibility.
  */
-typedef int idx_error_t;
+typedef int IdxError;
 
 /**
  * Indicates that the data was found to be valid.
@@ -72,7 +72,7 @@ typedef int idx_error_t;
  */
 #define IDX_ERROR_OVERFLOW 5
 
-typedef int idx_type_t;
+typedef int IdxType;
 
 #define IDX_TYPE_UINT8 0x08
 #define IDX_TYPE_INT8 0x09
@@ -87,21 +87,21 @@ typedef int idx_type_t;
  * represented by `size_t`.  Should be called to figure out how much space to
  * allocate before calling `idx_init`.
  */
-size_t idx_size(idx_type_t type, int ndims, ...);
+size_t idx_size(IdxType type, int ndims, ...);
 
 /**
  * Writes an idx header with the given settings to `data` and clears the
  * remaining space.  The amount of memory that this function requires can be
  * figured out by calling `idx_size` with the same settings.
  */
-void idx_init(void *data, idx_type_t type, int ndims, ...);
+void idx_init(void *data, IdxType type, int ndims, ...);
 
 /**
  * Checks that `data` points to a consistent idx structure that takes up `len`
  * bytes.  If validation passes then any further operations on the structure
  * with matching settings should always succeed.
  */
-idx_error_t idx_validate(const void *data, size_t len);
+IdxError idx_validate(const void *data, size_t len);
 
 /**
  * Returns a pointer to a static null terminated string containing the human
@@ -109,13 +109,13 @@ idx_error_t idx_validate(const void *data, size_t len);
  * recognized will return "unknown error".  All strings are noun phrases with
  * no capitalisation and no terminating full stop or newline.
  */
-const char *idx_error_string(idx_error_t error);
+const char *idx_error_string(IdxError error);
 
 /**
  * Returns the type code of the idx structure pointed to by `data`.
  * Expects that `data` points to a validated idx structure.
  */
-idx_type_t idx_type(const void *data);
+IdxType idx_type(const void *data);
 
 /**
  * Returns the number of dimensions of that information stored in `data`.

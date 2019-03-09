@@ -58,7 +58,7 @@
 #define IDX_SIZE(TYPE) IDX_SIZE_ ## TYPE
 
 
-static size_t idx_type_size(idx_type_t type) {
+static size_t idx_type_size(IdxType type) {
     switch (type) {
     case IDX_TYPE_UINT8:
         return 1;
@@ -169,7 +169,7 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     bytes[7] = (0x00000000000000ff & (uint64_t) value) >> 0;
 }
 
-idx_type_t idx_type(const void *data) {
+IdxType idx_type(const void *data) {
     const uint8_t *bytes = (const uint8_t *) data;
     uint8_t type_byte = bytes[2];
     assert(
@@ -180,7 +180,7 @@ idx_type_t idx_type(const void *data) {
         type_byte == 0x0D ||
         type_byte == 0x0E
     );
-    return (idx_type_t) bytes[2];
+    return (IdxType) bytes[2];
 }
 
 uint8_t idx_ndims(const void *data) {
@@ -194,7 +194,7 @@ size_t idx_bound(const void *data, uint8_t dim) {
     return (size_t) idx_read_uint32(&bytes[4 + 4 * dim]);
 }
 
-size_t idx_size(idx_type_t type, int ndims, ...) {
+size_t idx_size(IdxType type, int ndims, ...) {
     // Check that ndims can safely be stored as a uint8.
     if (ndims < 0 || ndims > 255) {
         return 0;
@@ -225,7 +225,7 @@ size_t idx_size(idx_type_t type, int ndims, ...) {
     return header_size + data_size;
 }
 
-void idx_init(void *data, idx_type_t type, int ndims, ...) {
+void idx_init(void *data, IdxType type, int ndims, ...) {
     uint8_t *bytes = (uint8_t *) data;
     assert(ndims >= 0 && ndims <= 255);
 
@@ -246,7 +246,7 @@ void idx_init(void *data, idx_type_t type, int ndims, ...) {
     assert((SIZE_MAX - data_size) >= 4);
 }
 
-idx_error_t idx_validate(const void *data, size_t size) {
+IdxError idx_validate(const void *data, size_t size) {
     const uint8_t *bytes = (const uint8_t *) data;
 
     // Check that length is long enough to contain magic number.
@@ -256,7 +256,7 @@ idx_error_t idx_validate(const void *data, size_t size) {
     
     // Parse the header.
     uint16_t magic = idx_read_uint16(&bytes[0]);
-    idx_type_t type = (idx_type_t) idx_read_uint8(&bytes[2]);
+    IdxType type = (IdxType) idx_read_uint8(&bytes[2]);
     uint8_t ndims = idx_read_uint8(&bytes[3]);
 
     // Check that the first two bytes are zero.
@@ -302,7 +302,7 @@ idx_error_t idx_validate(const void *data, size_t size) {
     return IDX_NO_ERROR;
 }
 
-const char *idx_error_string(idx_error_t error) {
+const char *idx_error_string(IdxError error) {
     switch (error) {
     case IDX_NO_ERROR:
         return "no error";

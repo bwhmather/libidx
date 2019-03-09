@@ -4,7 +4,7 @@
 
 
 int main(int argc, char **argv) {
-    idx_error_t err = idx_validate((
+    IdxError err = idx_validate((
         "\x00\x00\x08\x02"
         "\x00\x00\x00\x03"
         "\x00\x00\x00\x03"
