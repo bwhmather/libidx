@@ -32,6 +32,7 @@ test_suites = {
     'float_0d',
     'double_0d',
     'max_uint8',
+    'unsupported_0d',
     'overflow_header_uint8',
     'overflow_bounds_uint8',
   ],
@@ -61,6 +62,6 @@ foreach suite, tests : test_suites
       link_with : lib,
       install : false,
     )
-    test(suite + ':' + test_name, test_exe)
+    test(suite + ':' + test_name, test_exe, timeout: 90)
   endforeach
 endforeach
