@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef IDX_H
+#define IDX_H
 /**
  * Copyright 2018 Ben Mather <bwhmather@bwhmather.com>
  *
@@ -158,3 +160,4 @@ void idx_set_int32(void *data, int32_t value, int ndims, ...);
 void idx_set_float(void *data, float value, int ndims, ...);
 void idx_set_double(void *data, double value, int ndims, ...);
 
+#endif /* IDX_H */
