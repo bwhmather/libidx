@@ -43,7 +43,7 @@ test_suites = {
     'int32',
     'int8',
     'uint8',
-    'unknown',
+    'all',
   ],
   'idx_validate': [
     'too_short_for_header',
