@@ -25,6 +25,7 @@
 */
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <stddef.h>
 
 /**
@@ -82,6 +83,12 @@ typedef int IdxType;
 #define IDX_TYPE_INT32 0x0C
 #define IDX_TYPE_FLOAT 0x0D
 #define IDX_TYPE_DOUBLE 0x0E
+
+/**
+ * Returns `true` if libidx supports reading and writing values with the given
+ * type code.
+ */
+bool idx_type_supported(IdxType type);
 
 /**
  * Calculates the number of bytes required to store an idx data-structure with

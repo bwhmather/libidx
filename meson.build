@@ -51,6 +51,15 @@ test_suites = {
     'too_short_for_data_1d',
     'too_short_for_data_3d',
   ],
+  'idx_type_supported': [
+    'double',
+    'float',
+    'int16',
+    'int32',
+    'int8',
+    'uint8',
+    'unknown',
+  ],
 }
 
 foreach suite, tests : test_suites

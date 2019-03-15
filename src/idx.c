@@ -77,6 +77,20 @@ static size_t idx_type_size(IdxType type) {
     }
 }
 
+bool idx_type_supported(IdxType type) {
+    switch (type) {
+    case IDX_TYPE_UINT8:
+    case IDX_TYPE_INT8:
+    case IDX_TYPE_INT16:
+    case IDX_TYPE_INT32:
+    case IDX_TYPE_FLOAT:
+    case IDX_TYPE_DOUBLE:
+        return true;
+    default:
+        return false;
+    }
+}
+
 static inline uint8_t idx_read_uint8(const uint8_t bytes[1]) {
     return (uint8_t) bytes[0];
 }
