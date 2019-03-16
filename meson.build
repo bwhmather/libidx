@@ -24,6 +24,15 @@ test_suites = {
     'known',
     'unknown',
   ],
+  'idx_init': [
+    'double_0d',
+    'float_0d',
+    'int16_0d',
+    'int32_0d',
+    'int8_0d',
+    'uint8_0d',
+    'unsupported_types',
+  ],
   'idx_size': [
     'uint8_0d',
     'int8_0d',
@@ -71,6 +80,6 @@ foreach suite, tests : test_suites
       link_with : lib,
       install : false,
     )
-    test(suite + ':' + test_name, test_exe, timeout: 90)
+    test(suite + ':' + test_name, test_exe, timeout: 180)
   endforeach
 endforeach
