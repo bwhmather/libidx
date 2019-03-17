@@ -289,6 +289,7 @@ IdxError idx_validate(const void *data, size_t size) {
     }
 
     // Check that there is at least enough space to store the dimensions.
+    // No risk of overflow because `ndims` is limited to 255.
     if (size < 4 + (size_t) ndims * 4) {
         return IDX_ERROR_TRUNCATED;
     }
@@ -303,11 +304,13 @@ IdxError idx_validate(const void *data, size_t size) {
         expected_length *= bound;
     }
 
-    if (expected_length > size) {
+    // No risk of underflow as we have already checked that size is greater
+    // than or equal to the size of the header.
+    if (expected_length > size - (4 + (size_t) ndims * 4)) {
         return IDX_ERROR_TRUNCATED;
     }
 
-    if (expected_length < size) {
+    if (expected_length < size - (4 + (size_t) ndims * 4)) {
         return IDX_ERROR_OVERALLOCATED;
     }
 
