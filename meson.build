@@ -55,6 +55,7 @@ test_suites = {
     'all',
   ],
   'idx_validate': [
+    'uint8_2d',
     'too_short_for_header',
     'too_short_for_bounds',
     'too_short_for_data_1d',
