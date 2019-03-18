@@ -276,7 +276,8 @@ IdxError idx_validate(const void *data, size_t size) {
         return IDX_ERROR_BAD_PADDING;
     }
 
-    // Check type code is valid.
+    // Check type code is supported.  We can't validate the size of structures
+    // containing data of a type that we do not recognize.
     if (
         type != IDX_TYPE_UINT8 &&
         type != IDX_TYPE_INT8 &&
