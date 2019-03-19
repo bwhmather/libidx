@@ -24,6 +24,13 @@ test_suites = {
     'known',
     'unknown',
   ],
+  'idx_get_uint8': [
+    'valid_0d',
+    'invalid_type_0d',
+    'invalid_ndims_0d',
+    'empty_1d',
+    'large_1d',
+  ],
   'idx_init': [
     'double_0d',
     'float_0d',
