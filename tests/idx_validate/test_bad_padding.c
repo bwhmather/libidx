@@ -13,6 +13,8 @@ int main(void) {
         0x01, 0x02, 0x03, 0x04,
     };
 
+    idx_assert(idx_validate(data, 12) == IDX_NO_ERROR);
+
     for (uint16_t padding = 0xffff; padding > 0; padding--) {
         data[0] = (uint8_t) ((padding >> 8) & 0xff);
         data[1] = (uint8_t) ((padding >> 0) & 0xff);
