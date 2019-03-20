@@ -21,7 +21,7 @@ int main(void) {
         0x01, 0x55, 0x33, 0x0f,
     };
 
-    uint8_t *data = (uint8_t *) calloc(sizeof(uint8_t), 0x0155330f + 4);
+    uint8_t *data = (uint8_t *) calloc(sizeof(uint8_t), 0x0155330f + 8);
     idx_assert(data != NULL);
 
     // Copy the header.
