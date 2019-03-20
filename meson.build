@@ -70,6 +70,7 @@ test_suites = {
     'too_short_for_bounds',
     'too_short_for_data_1d',
     'too_short_for_data_3d',
+    'bad_padding',
   ],
   'idx_type_supported': [
     'double',
