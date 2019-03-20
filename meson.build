@@ -30,6 +30,9 @@ test_suites = {
     'invalid_ndims_0d',
     'empty_1d',
     'large_1d',
+    'empty_2d',
+    'small_2d',
+    'large_2d',
   ],
   'idx_init': [
     'double_0d',
