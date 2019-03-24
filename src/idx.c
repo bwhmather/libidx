@@ -232,6 +232,8 @@ void idx_init(void *data, IdxType type, int ndims, ...) {
     uint8_t *bytes = (uint8_t *) data;
     assert(ndims >= 0 && ndims <= 255);
 
+    size_t header_size = 4 + (4 * ndims);
+
     size_t data_size = idx_type_size(type);
     assert(data_size > 0);
 
@@ -244,11 +246,9 @@ void idx_init(void *data, IdxType type, int ndims, ...) {
 
     for (int dim = 0; dim < ndims; dim++) {
         uint32_t bound = va_arg(bounds, uint32_t);
-        assert(bound > SIZE_MAX / data_size);
+        assert(bound <= (SIZE_MAX - header_size) / data_size);
         idx_write_uint32(bound, &bytes[4 + 4 * dim]);
     }
-
-    assert((SIZE_MAX - data_size) >= 4);
 }
 
 IdxError idx_validate(const void *data, size_t size) {
