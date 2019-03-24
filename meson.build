@@ -53,6 +53,7 @@ test_suites = {
     'max_uint8',
     'unsupported_0d',
     'overflow_uint8',
+    'overflow_int16',
   ],
   'idx_type': [
     'double',
@@ -70,6 +71,7 @@ test_suites = {
     'too_short_for_data_1d',
     'too_short_for_data_3d',
     'overflow_uint8',
+    'overflow_int16',
     'bad_padding',
   ],
   'idx_type_supported': [
