@@ -205,31 +205,24 @@ size_t idx_size(IdxType type, int ndims, ...) {
         return 0;
     }
 
+    // Space required to store the size of each dimension.  `ndims` is limited
+    // to 255, so this can't overflow.
+    size_t header_size = 4 + (4 * ndims);
+
     size_t data_size = idx_type_size(type);
     if (data_size == 0) {
         // Unrecognized type code.
         return 0;
     }
 
-    // Magic number.
-    size_t header_size = 4;
-    
-    // Space required to store the size of each dimension.
-    header_size += 4 * ndims;
-
     va_list bounds;
     va_start(bounds, ndims);
-
     for (int dim = 0; dim < ndims; dim++) {
         uint32_t bound = va_arg(bounds, uint32_t);
-        if (bound > SIZE_MAX / data_size) {
+        if (bound > (SIZE_MAX - header_size) / data_size) {
             return 0;
         }
         data_size *= bound;
-    }
-
-    if ((SIZE_MAX - header_size) < data_size) {
-        return 0;
     }
 
     return header_size + data_size;
@@ -276,12 +269,6 @@ IdxError idx_validate(const void *data, size_t size) {
         return IDX_ERROR_BAD_PADDING;
     }
 
-    // Check type code is supported.  We can't validate the size of structures
-    // containing data of a type that we do not recognize.
-    if (!idx_type_supported(type)) {
-        return IDX_ERROR_UNKNOWN_TYPE_CODE;
-    }
-
     size_t header_size = 4 + (size_t) ndims * 4;
 
     // Check that there is at least enough space to store the dimensions.
@@ -290,10 +277,14 @@ IdxError idx_validate(const void *data, size_t size) {
         return IDX_ERROR_TRUNCATED;
     }
 
-    // Check length.
+    // Check type code is supported.  We can't validate the size of structures
+    // containing data of a type that we do not recognize.
     size_t data_size = idx_type_size(type);
-    assert(data_size != 0);
+    if (data_size == 0) {
+        return IDX_ERROR_UNKNOWN_TYPE_CODE;
+    }
 
+    // Check length.
     for (int dim = 0; dim < ndims; dim++) {
         uint32_t bound = idx_read_uint32(&bytes[4 + (4 * dim)]);
         if (bound > (SIZE_MAX - header_size) / data_size) {
