@@ -41,6 +41,12 @@ test_suites = {
     'int32_0d',
     'int8_0d',
     'uint8_0d',
+    'double_3d',
+    'float_3d',
+    'int16_3d',
+    'int32_3d',
+    'int8_3d',
+    'uint8_3d',
     'unsupported_types',
   ],
   'idx_size': [
