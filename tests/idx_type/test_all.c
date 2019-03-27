@@ -1,6 +1,6 @@
 /**
- * Checks that `idx_type` will correctly identify a structure containing 16 bit
- * integers..
+ * Checks that `idx_type` will handle all possible type codes, both supported
+ * and unsupported..
  */
 #include "idx.h"
 
@@ -8,7 +8,9 @@
 
 
 int main(void) {
-    uint8_t data[] = "\x00\x00\x00\x00\xFE";
+    uint8_t data[] = {
+        0x00, 0x00, 0x00, 0x00,
+    };
 
     for (IdxType type = 0; type < 0xff; type++) {
         data[2] = (uint8_t) type;

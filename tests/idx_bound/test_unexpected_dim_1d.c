@@ -4,7 +4,11 @@
 
 
 int main(void) {
-    idx_assert_aborts(idx_bound("\x00\x00\x08\x00\xAB", 1));
+    const uint8_t data[] = {
+        0x00, 0x00, 0x08, 0x00, 0xab,
+    };
+
+    idx_assert_aborts(idx_bound(data, 1));
 
     return 0;
 }

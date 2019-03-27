@@ -7,8 +7,11 @@
 
 
 int main(void) {
-    IdxType type_code = idx_type("\x00\x00\x08\x00\xFE");
-    idx_assert(type_code == IDX_TYPE_UINT8);
+    const uint8_t data[] = {
+        0x00, 0x00, 0x08, 0x00,
+        0xfe,
+    };
+    idx_assert(idx_type(data) == IDX_TYPE_UINT8);
 
     return 0;
 }

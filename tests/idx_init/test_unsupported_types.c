@@ -15,6 +15,7 @@
 int main(void) {
     // Allocate enough space to fit the biggest possible 3x3 matrix.
     size_t max_size = idx_size(IDX_TYPE_DOUBLE, 2, 3, 3);
+
     uint8_t *buffer = calloc(max_size, sizeof(uint8_t));
     idx_assert(buffer != NULL);
 

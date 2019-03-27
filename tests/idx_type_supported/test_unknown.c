@@ -1,3 +1,6 @@
+/**
+ * Tests that all unknown types are recognized as unsupported.
+ */
 #include "idx.h"
 
 #include "idx_test.h"

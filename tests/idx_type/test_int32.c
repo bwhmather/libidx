@@ -1,5 +1,6 @@
 /**
- * Checks that `idx_type` will correctly identify a uint16 structure.
+ * Checks that `idx_type` will correctly identify a structure containing 32 bit
+ * integers.
  */
 #include "idx.h"
 
@@ -7,8 +8,11 @@
 
 
 int main(void) {
-    IdxType type_code = idx_type("\x00\x00\x0C\x00\xFE");
-    idx_assert(type_code == IDX_TYPE_INT32);
+    const uint8_t data[] = {
+        0x00, 0x00, 0x0c, 0x00,
+        0xaa, 0xbb, 0xcc, 0xdd,
+    };
+    idx_assert(idx_type(data) == IDX_TYPE_INT32);
 
     return 0;
 }

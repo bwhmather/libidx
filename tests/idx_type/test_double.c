@@ -1,6 +1,6 @@
 /**
- * Checks that `idx_type` will correctly identify a structure containing 16 bit
- * integers..
+ * Checks that `idx_type` will correctly identify a structure containing a
+ * single double.
  */
 #include "idx.h"
 
@@ -8,8 +8,11 @@
 
 
 int main(void) {
-    IdxType type_code = idx_type("\x00\x00\x0E\x00\xFE");
-    idx_assert(type_code == IDX_TYPE_DOUBLE);
+    const uint8_t data[] = {
+        0x00, 0x00, 0x0e, 0x00,
+        0x40, 0x09, 0x21, 0xfb, 0x54, 0x44, 0x2d, 0x18,
+    };
+    idx_assert(idx_type(data) == IDX_TYPE_DOUBLE);
 
     return 0;
 }

@@ -11,12 +11,16 @@
 
 int main(void) {
     size_t size = idx_size(IDX_TYPE_FLOAT, 0);
+
     uint8_t *buffer = calloc(size, sizeof(uint8_t));
     idx_assert(buffer != NULL);
 
     idx_init(buffer, IDX_TYPE_FLOAT, 0);
     
-    idx_assert(memcmp(buffer, "\x00\x00\x0D\x00", 4) == 0);
+    const uint8_t expected[] = {
+        0x00, 0x00, 0x0d, 0x00,
+    };
+    idx_assert(memcmp(buffer, expected, 4) == 0);
 
     return 0;
 }
