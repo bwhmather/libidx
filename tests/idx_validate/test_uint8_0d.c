@@ -7,7 +7,7 @@
 
 
 int main(void) {
-    uint8_t data[] = {
+    const uint8_t data[] = {
         0x00, 0x00, 0x08, 0x00,
         0xfe,
     };

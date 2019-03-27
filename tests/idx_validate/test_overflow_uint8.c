@@ -13,7 +13,7 @@ int main(void) {
     // happen before we hit the comparison.
     // Bounds chosen to multiply to exactly two to the power of 64 minus 16,
     // meaning that the structure is one byte two big.
-    uint8_t data[] = {
+    const uint8_t data[] = {
         0x00, 0x00, 0x08, 0x03,
         0x00, 0x00, 0x05, 0x29,
         0x06, 0xa8, 0x95, 0x70,
