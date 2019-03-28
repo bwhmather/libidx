@@ -47,5 +47,7 @@ int main(void) {
     // Check that we have reached the end of the array.
     idx_assert_aborts(idx_get_uint8(data, 1, 0x0155330f));
 
+    free(data);
+
     return 0;
 }

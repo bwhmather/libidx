@@ -43,6 +43,9 @@ int main(void) {
             idx_assert(buffer[i] == 0);
         }
     }
+
+    free(buffer);
+
     return 0;
 }
 

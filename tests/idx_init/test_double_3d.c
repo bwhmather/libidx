@@ -25,6 +25,8 @@ int main(void) {
     };
     idx_assert(memcmp(buffer, expected, 16) == 0);
 
+    free(buffer);
+
     return 0;
 }
 

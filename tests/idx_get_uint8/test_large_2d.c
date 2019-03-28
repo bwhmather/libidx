@@ -54,5 +54,7 @@ int main(void) {
         idx_assert_aborts(idx_get_uint8(data, 2, 0x5533, v));
     }
 
+    free(data);
+
     return 0;
 }
