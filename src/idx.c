@@ -27,6 +27,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <assert.h>
+#include <math.h>
 
 #define IDX_CONCAT_INNER(A, B) A ## B
 #define IDX_CONCAT(A, B) IDX_CONCAT_INNER(A, B)
@@ -173,14 +174,38 @@ static inline void idx_write_float(float value, uint8_t bytes[4]) {
 }
 
 static inline void idx_write_double(double value, uint8_t bytes[8]) {
-    bytes[0] = (0xff00000000000000 & (uint64_t) value) >> 56;
-    bytes[1] = (0x00ff000000000000 & (uint64_t) value) >> 48;
-    bytes[2] = (0x0000ff0000000000 & (uint64_t) value) >> 40;
-    bytes[3] = (0x000000ff00000000 & (uint64_t) value) >> 32;
-    bytes[4] = (0x00000000ff000000 & (uint64_t) value) >> 24;
-    bytes[5] = (0x0000000000ff0000 & (uint64_t) value) >> 16;
-    bytes[6] = (0x000000000000ff00 & (uint64_t) value) >> 8;
-    bytes[7] = (0x00000000000000ff & (uint64_t) value) >> 0;
+    // From RFC-1014 (https://tools.ietf.org/html/rfc1014):
+    //     +------+------+------+------+------+------+------+------+
+    //     |byte 0|byte 1|byte 2|byte 3|byte 4|byte 5|byte 6|byte 7|
+    //     S|    E   |                    F                        |
+    //     +------+------+------+------+------+------+------+------+
+    //     1|<--11-->|<-----------------52 bits------------------->|
+    //     <-----------------------64 bits------------------------->
+
+    assert(!isnan(value));
+    assert(!isinf(value));
+
+    unsigned int sign = signbit(value) ? 1 : 0;
+
+    int exponent = 0;
+    double mantissa = frexp(fabs(value), &exponent);
+    mantissa = ldexp(mantissa, 53);
+
+    assert(exponent > -0x400);
+    assert(exponent < 0x400);
+    assert(exponent == 1);
+
+    uint_fast64_t mantissa_int = (uint_fast64_t) trunc(mantissa);
+    uint_fast16_t exponent_int = (uint_fast16_t) (exponent + 1022);
+
+    bytes[0] = ((sign << 7) & 0x80) | ((exponent_int >> 4) & 0x7f);
+    bytes[1] = ((exponent_int << 4) & 0xf0) | ((mantissa_int >> 48) & 0x0f);
+    bytes[2] = (mantissa_int >> 40) & 0xff;
+    bytes[3] = (mantissa_int >> 32) & 0xff;
+    bytes[4] = (mantissa_int >> 24) & 0xff;
+    bytes[5] = (mantissa_int >> 16) & 0xff;
+    bytes[6] = (mantissa_int >> 8) & 0xff;
+    bytes[7] = (mantissa_int >> 0) & 0xff;
 }
 
 IdxType idx_type(const void *data) {

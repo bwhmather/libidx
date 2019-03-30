@@ -1,5 +1,8 @@
 project('idx', 'c')
 
+cc = meson.get_compiler('c')
+dependencies = cc.find_library('m', required : false)
+
 includes = include_directories('include')
 
 ### Library ###
@@ -10,6 +13,7 @@ lib_sources = [
 lib = both_libraries(
   'idx', lib_sources,
   include_directories : includes,
+  dependencies : dependencies,
   install : true,
 )
 
