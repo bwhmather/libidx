@@ -34,6 +34,9 @@ test_suites = {
     'small_2d',
     'large_2d',
   ],
+  'idx_set_double': [
+    'pos_one_0d',
+  ],
   'idx_init': [
     'double_0d',
     'float_0d',
