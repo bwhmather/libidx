@@ -191,10 +191,6 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     double mantissa = frexp(fabs(value), &exponent);
     mantissa = ldexp(mantissa, 53);
 
-    assert(exponent > -0x400);
-    assert(exponent < 0x400);
-    assert(exponent == 1);
-
     uint_fast64_t mantissa_int = (uint_fast64_t) trunc(mantissa);
     uint_fast16_t exponent_int = (uint_fast16_t) (exponent + 1022);
 
