@@ -191,21 +191,21 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     double mantissa = frexp(fabs(value), &exponent);
     mantissa = ldexp(mantissa, 53);
 
-    uint_fast64_t mantissa_int = (uint_fast64_t) trunc(mantissa);
-    uint_fast16_t exponent_int = (uint_fast16_t) (exponent + 1022);
+    uint_fast64_t biased_mantissa = (uint_fast64_t) trunc(mantissa);
+    uint_fast16_t biased_exponent = (uint_fast16_t) (exponent + 1022);
 
-    if (mantissa_int == 0) {
-        exponent_int = 0;
+    if (biased_mantissa == 0) {
+        biased_exponent = 0;
     }
 
-    bytes[0] = ((sign << 7) & 0x80) | ((exponent_int >> 4) & 0x7f);
-    bytes[1] = ((exponent_int << 4) & 0xf0) | ((mantissa_int >> 48) & 0x0f);
-    bytes[2] = (mantissa_int >> 40) & 0xff;
-    bytes[3] = (mantissa_int >> 32) & 0xff;
-    bytes[4] = (mantissa_int >> 24) & 0xff;
-    bytes[5] = (mantissa_int >> 16) & 0xff;
-    bytes[6] = (mantissa_int >> 8) & 0xff;
-    bytes[7] = (mantissa_int >> 0) & 0xff;
+    bytes[0] = ((sign << 7) & 0x80) | ((biased_exponent >> 4) & 0x7f);
+    bytes[1] = ((biased_exponent << 4) & 0xf0) | ((biased_mantissa >> 48) & 0x0f);
+    bytes[2] = (biased_mantissa >> 40) & 0xff;
+    bytes[3] = (biased_mantissa >> 32) & 0xff;
+    bytes[4] = (biased_mantissa >> 24) & 0xff;
+    bytes[5] = (biased_mantissa >> 16) & 0xff;
+    bytes[6] = (biased_mantissa >> 8) & 0xff;
+    bytes[7] = (biased_mantissa >> 0) & 0xff;
 }
 
 IdxType idx_type(const void *data) {
