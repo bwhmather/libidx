@@ -41,6 +41,8 @@ test_suites = {
   'idx_set_double': [
     'pos_one_0d',
     'neg_one_0d',
+    'pos_zero_0d',
+    'neg_zero_0d',
   ],
   'idx_init': [
     'double_0d',
