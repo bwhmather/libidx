@@ -194,6 +194,10 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     uint_fast64_t mantissa_int = (uint_fast64_t) trunc(mantissa);
     uint_fast16_t exponent_int = (uint_fast16_t) (exponent + 1022);
 
+    if (mantissa_int == 0) {
+        exponent_int = 0;
+    }
+
     bytes[0] = ((sign << 7) & 0x80) | ((exponent_int >> 4) & 0x7f);
     bytes[1] = ((exponent_int << 4) & 0xf0) | ((mantissa_int >> 48) & 0x0f);
     bytes[2] = (mantissa_int >> 40) & 0xff;
