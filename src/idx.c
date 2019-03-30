@@ -189,9 +189,8 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
 
     int exponent = 0;
     double mantissa = frexp(fabs(value), &exponent);
-    mantissa = ldexp(mantissa, 53);
 
-    uint_fast64_t biased_mantissa = (uint_fast64_t) trunc(mantissa);
+    uint_fast64_t biased_mantissa = (uint_fast64_t) trunc(ldexp(mantissa, 53));
     uint_fast16_t biased_exponent = (uint_fast16_t) (exponent + 1022);
 
     if (biased_mantissa == 0) {
