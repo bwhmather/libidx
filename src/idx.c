@@ -197,8 +197,15 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
         biased_exponent = 0;
     }
 
-    bytes[0] = ((sign << 7) & 0x80) | ((biased_exponent >> 4) & 0x7f);
-    bytes[1] = ((biased_exponent << 4) & 0xf0) | ((biased_mantissa >> 48) & 0x0f);
+    // Write sign bit.
+    bytes[0] = (sign << 7) & 0x80;
+
+    // Write exponent.
+    bytes[1] |= (biased_exponent >> 4) & 0x7f;
+    bytes[1] = (biased_exponent << 4) & 0xf0;
+
+    // Write mantissa.
+    bytes[1] |= (biased_mantissa >> 48) & 0x0f;
     bytes[2] = (biased_mantissa >> 40) & 0xff;
     bytes[3] = (biased_mantissa >> 32) & 0xff;
     bytes[4] = (biased_mantissa >> 24) & 0xff;
