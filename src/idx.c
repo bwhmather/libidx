@@ -201,7 +201,7 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     bytes[0] = (sign << 7) & 0x80;
 
     // Write exponent.
-    bytes[1] |= (biased_exponent >> 4) & 0x7f;
+    bytes[0] |= (biased_exponent >> 4) & 0x7f;
     bytes[1] = (biased_exponent << 4) & 0xf0;
 
     // Write mantissa.
