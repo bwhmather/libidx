@@ -204,23 +204,23 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     bool negative = signbit(value) ? true : false;
 
     int exponent = 0;
-    double mantissa = frexp(fabs(value), &exponent);
+    double significand = frexp(fabs(value), &exponent);
 
-    uint_fast64_t biased_mantissa;
+    uint_fast64_t biased_significand;
     uint_fast16_t biased_exponent;
     if (exponent < -1021) {
         // Value is sub-normal.
-        biased_mantissa = (uint_fast64_t) trunc(ldexp(
-            mantissa, 53 + (exponent + 1021)
+        biased_significand = (uint_fast64_t) trunc(ldexp(
+            significand, 53 + (exponent + 1021)
         ));
         biased_exponent = 0;
     } else {
         // Value is normalized.
-        biased_mantissa = (uint_fast64_t) trunc(ldexp(mantissa, 53));
+        biased_significand = (uint_fast64_t) trunc(ldexp(significand, 53));
         biased_exponent = (uint_fast16_t) (exponent + 1022);
     }
 
-    if (biased_mantissa == 0) {
+    if (biased_significand == 0) {
         biased_exponent = 0;
     }
 
@@ -231,14 +231,14 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     bytes[0] |= (biased_exponent >> 4) & 0x7f;
     bytes[1] = (biased_exponent << 4) & 0xf0;
 
-    // Write mantissa.
-    bytes[1] |= (biased_mantissa >> 48) & 0x0f;
-    bytes[2] = (biased_mantissa >> 40) & 0xff;
-    bytes[3] = (biased_mantissa >> 32) & 0xff;
-    bytes[4] = (biased_mantissa >> 24) & 0xff;
-    bytes[5] = (biased_mantissa >> 16) & 0xff;
-    bytes[6] = (biased_mantissa >> 8) & 0xff;
-    bytes[7] = (biased_mantissa >> 0) & 0xff;
+    // Write significand.
+    bytes[1] |= (biased_significand >> 48) & 0x0f;
+    bytes[2] = (biased_significand >> 40) & 0xff;
+    bytes[3] = (biased_significand >> 32) & 0xff;
+    bytes[4] = (biased_significand >> 24) & 0xff;
+    bytes[5] = (biased_significand >> 16) & 0xff;
+    bytes[6] = (biased_significand >> 8) & 0xff;
+    bytes[7] = (biased_significand >> 0) & 0xff;
 }
 
 IdxType idx_type(const void *data) {
