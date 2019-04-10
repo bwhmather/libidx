@@ -142,27 +142,43 @@ static inline double idx_read_double(const uint8_t bytes[8]) {
 }
 
 static inline void idx_write_uint8(uint8_t value, uint8_t bytes[1]) {
-    bytes[0] = (char) value;
+    bytes[0] = value;
 }
 
 static inline void idx_write_int8(int8_t value, uint8_t bytes[1]) {
-    bytes[0] = (char) value;
+    uint8_t twos_complement;
+
+    if (value < 0) {
+        twos_complement = (0xff - (uint8_t) abs((int) value)) + 1;
+    } else {
+        twos_complement = (uint8_t) value;
+    }
+
+    idx_write_uint8(twos_complement, bytes);
 }
 
 static inline void idx_write_uint16(uint16_t value, uint8_t bytes[2]) {
-    bytes[0] = (0xff00 & value) >> 8;
-    bytes[1] = (0x00ff & value) >> 0;
+    bytes[0] = (value >> 8) & 0xff;
+    bytes[1] = (value >> 0) & 0xff;
 }
 
 static inline void idx_write_int16(int16_t value, uint8_t bytes[2]) {
-    idx_write_uint16((uint16_t) value, bytes);
+    uint16_t twos_complement;
+
+    if (value < 0) {
+        twos_complement = (0xffff - (uint16_t) abs((int) value)) + 1;
+    } else {
+        twos_complement = (uint16_t) value;
+    }
+
+    idx_write_uint16((uint16_t) twos_complement, bytes);
 }
 
 static inline void idx_write_uint32(uint32_t value, uint8_t bytes[4]) {
-    bytes[0] = (0xff000000 & value) >> 24;
-    bytes[1] = (0x00ff0000 & value) >> 16;
-    bytes[2] = (0x0000ff00 & value) >> 8;
-    bytes[3] = (0x000000ff & value) >> 0;
+    bytes[0] = (value >> 24) & 0xff;
+    bytes[1] = (value >> 16) & 0xff;
+    bytes[2] = (value >> 8) & 0xff;
+    bytes[3] = (value >> 0) & 0xff;
 }
 
 static inline void idx_write_int32(int32_t value, uint8_t bytes[4]) {
@@ -170,7 +186,7 @@ static inline void idx_write_int32(int32_t value, uint8_t bytes[4]) {
 }
 
 static inline void idx_write_float(float value, uint8_t bytes[4]) {
-    idx_write_uint32((float) value, bytes);
+    assert(false);
 }
 
 static inline void idx_write_double(double value, uint8_t bytes[8]) {
@@ -185,7 +201,7 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     assert(!isnan(value));
     assert(!isinf(value));
 
-    unsigned int sign = signbit(value) ? 1 : 0;
+    bool negative = signbit(value) ? true : false;
 
     int exponent = 0;
     double mantissa = frexp(fabs(value), &exponent);
@@ -209,7 +225,7 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     }
 
     // Write sign bit.
-    bytes[0] = (sign << 7) & 0x80;
+    bytes[0] = negative ? 0x80 : 0x00;
 
     // Write exponent.
     bytes[0] |= (biased_exponent >> 4) & 0x7f;
