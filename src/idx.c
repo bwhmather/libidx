@@ -74,7 +74,7 @@ static size_t idx_type_size(IdxType type) {
     case IDX_TYPE_DOUBLE:
         return IDX_SIZE_DOUBLE;
     default:
-        return 0;
+        assert(false);
     }
 }
 
@@ -267,11 +267,10 @@ size_t idx_size(IdxType type, int ndims, ...) {
     // to 255, so this can't overflow.
     size_t header_size = 4 + (4 * ndims);
 
-    size_t data_size = idx_type_size(type);
-    if (data_size == 0) {
-        // Unrecognized type code.
+    if (!idx_type_supported(type)) {
         return 0;
     }
+    size_t data_size = idx_type_size(type);
 
     va_list bounds;
     va_start(bounds, ndims);
@@ -293,7 +292,6 @@ void idx_init(void *data, IdxType type, int ndims, ...) {
     size_t header_size = 4 + (4 * ndims);
 
     size_t data_size = idx_type_size(type);
-    assert(data_size > 0);
 
     idx_write_uint16(0, &bytes[0]);
     idx_write_uint8(type, &bytes[2]);
@@ -337,10 +335,10 @@ IdxError idx_validate(const void *data, size_t size) {
 
     // Check type code is supported.  We can't validate the size of structures
     // containing data of a type that we do not recognize.
-    size_t data_size = idx_type_size(type);
-    if (data_size == 0) {
+    if (!idx_type_supported(type)) {
         return IDX_ERROR_UNKNOWN_TYPE_CODE;
     }
+    size_t data_size = idx_type_size(type);
 
     // Check length.
     for (int dim = 0; dim < ndims; dim++) {
