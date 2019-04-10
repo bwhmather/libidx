@@ -62,17 +62,17 @@
 static size_t idx_type_size(IdxType type) {
     switch (type) {
     case IDX_TYPE_UINT8:
-        return 1;
+        return IDX_SIZE_UINT8;
     case IDX_TYPE_INT8:
-        return 1;
+        return IDX_SIZE_INT8;
     case IDX_TYPE_INT16:
-        return 2;
+        return IDX_SIZE_INT16;
     case IDX_TYPE_INT32:
-        return 4;
+        return IDX_SIZE_INT32;
     case IDX_TYPE_FLOAT:
-        return 4;
+        return IDX_SIZE_FLOAT;
     case IDX_TYPE_DOUBLE:
-        return 8;
+        return IDX_SIZE_DOUBLE;
     default:
         return 0;
     }
