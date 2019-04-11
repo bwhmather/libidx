@@ -198,31 +198,39 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     //     +------+------+------+------+------+------+------+------+
     //     1|<--11-->|<-----------------52 bits------------------->|
     //     <-----------------------64 bits------------------------->
-
-    assert(!isnan(value));
-    assert(!isinf(value));
+    uint_fast64_t biased_significand;
+    uint_fast16_t biased_exponent;
 
     bool negative = signbit(value) ? true : false;
 
-    int exponent = 0;
-    double significand = frexp(fabs(value), &exponent);
+    if (isnan(value)) {
+        // TODO distinguish between quiet and signalling NaNs.
+        biased_exponent = 0x7ff;
+        biased_significand = 0x01;
 
-    uint_fast64_t biased_significand;
-    uint_fast16_t biased_exponent;
-    if (exponent < -1021) {
-        // Value is sub-normal.
-        biased_significand = (uint_fast64_t) trunc(ldexp(
-            significand, 53 + (exponent + 1021)
-        ));
-        biased_exponent = 0;
+    } else if (isinf(value)) {
+        biased_exponent = 0x7ff;
+        biased_significand = 0x00;
+
     } else {
-        // Value is normalized.
-        biased_significand = (uint_fast64_t) trunc(ldexp(significand, 53));
-        biased_exponent = (uint_fast16_t) (exponent + 1022);
-    }
+        int exponent = 0;
+        double significand = frexp(fabs(value), &exponent);
 
-    if (biased_significand == 0) {
-        biased_exponent = 0;
+        if (exponent < -1021) {
+            // Value is sub-normal.
+            biased_significand = (uint_fast64_t) trunc(ldexp(
+                significand, 53 + (exponent + 1021)
+            ));
+            biased_exponent = 0;
+        } else {
+            // Value is normalized.
+            biased_significand = (uint_fast64_t) trunc(ldexp(significand, 53));
+            biased_exponent = (uint_fast16_t) (exponent + 1022);
+        }
+
+        if (biased_significand == 0) {
+            biased_exponent = 0;
+        }
     }
 
     // Write sign bit.
