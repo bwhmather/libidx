@@ -51,6 +51,8 @@ test_suites = {
     'min_pos_subnormal_0d',
     'max_neg_subnormal_0d',
     'min_neg_subnormal_0d',
+    'pos_inf_0d',
+    'neg_inf_0d',
   ],
   'idx_init': [
     'double_0d',
