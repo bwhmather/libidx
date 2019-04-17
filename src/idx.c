@@ -130,7 +130,7 @@ static inline float idx_read_float(const uint8_t bytes[4]) {
 }
 
 static inline double idx_read_double(const uint8_t bytes[8]) {
-    bool negative = bytes[0] & 0x80 == 0x80;
+    bool negative = (bytes[0] & 0x80) == 0x80;
 
     uint_fast16_t biased_exponent = (uint_fast16_t) (
         ((uint_fast16_t) (bytes[0] & 0x7f) << 4) |
@@ -164,6 +164,8 @@ static inline double idx_read_double(const uint8_t bytes[8]) {
         double significand = ldexp((double) biased_significand, -53);
         value = ldexp(significand, exponent);
     }
+
+    value = copysign(value, negative ? -1.0 : 1.0);
 
     return value;
 }
