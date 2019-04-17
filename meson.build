@@ -54,6 +54,9 @@ test_suites = {
     'pos_inf_0d',
     'neg_inf_0d',
   ],
+  'idx_get_double': [
+    'pos_one_0d',
+  ],
   'idx_init': [
     'double_0d',
     'float_0d',
