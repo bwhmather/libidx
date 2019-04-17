@@ -130,16 +130,42 @@ static inline float idx_read_float(const uint8_t bytes[4]) {
 }
 
 static inline double idx_read_double(const uint8_t bytes[8]) {
-    return (double) (
-        ((uint64_t) bytes[0] << 56) |
-        ((uint64_t) bytes[1] << 48) |
-        ((uint64_t) bytes[2] << 40) |
-        ((uint64_t) bytes[3] << 32) |
-        ((uint64_t) bytes[4] << 24) |
-        ((uint64_t) bytes[5] << 16) |
-        ((uint64_t) bytes[6] << 8) |
-        ((uint64_t) bytes[7] << 0)
+    bool negative = bytes[0] & 0x80 == 0x80;
+
+    uint_fast16_t biased_exponent = (uint_fast16_t) (
+        ((uint_fast16_t) (bytes[0] & 0x7f) << 4) |
+        ((uint_fast16_t) (bytes[1] & 0xf0) >> 4)
     );
+
+    uint_fast64_t biased_significand = (uint_fast64_t) (
+        ((uint_fast64_t) (bytes[1] & 0x0f) << 48) |
+        ((uint_fast64_t) bytes[2] << 40) |
+        ((uint_fast64_t) bytes[3] << 32) |
+        ((uint_fast64_t) bytes[4] << 24) |
+        ((uint_fast64_t) bytes[5] << 16) |
+        ((uint_fast64_t) bytes[6] << 8) |
+        ((uint_fast64_t) bytes[7] << 0)
+    );
+
+    double value;
+
+    if (biased_exponent == 0x7ff) {
+        if (biased_significand == 0) {
+            value = INFINITY;
+        } else {
+            value = NAN;
+        }
+    } else if (biased_exponent == 0) {
+        // Denormal number.
+        assert(false);
+    } else {
+        biased_significand |= 0x10000000000000;
+        int exponent = ((int) biased_exponent) - 1022;
+        double significand = ldexp((double) biased_significand, -53);
+        value = ldexp(significand, exponent);
+    }
+
+    return value;
 }
 
 static inline void idx_write_uint8(uint8_t value, uint8_t bytes[1]) {
@@ -323,7 +349,7 @@ IdxError idx_validate(const void *data, size_t size) {
     if (size < 4) {
         return IDX_ERROR_TRUNCATED;
     }
-    
+
     // Parse the header.
     uint16_t magic = idx_read_uint16(&bytes[0]);
     IdxType type = (IdxType) idx_read_uint8(&bytes[2]);
@@ -407,7 +433,7 @@ static size_t idx_data_offset_va(
         assert(index < stride);
 
         offset *= stride;
-        offset += index; 
+        offset += index;
     }
 
     va_end(indexes);
