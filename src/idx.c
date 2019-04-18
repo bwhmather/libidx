@@ -156,12 +156,13 @@ static inline double idx_read_double(const uint8_t bytes[8]) {
             value = NAN;
         }
     } else if (biased_exponent == 0) {
-        // Denormal number.
-        assert(false);
+        const int exponent = -1021;
+        const double significand = ldexp((double) biased_significand, -53);
+        value = ldexp(significand, - 1021);
     } else {
         biased_significand |= 0x10000000000000;
-        int exponent = ((int) biased_exponent) - 1022;
-        double significand = ldexp((double) biased_significand, -53);
+        const int exponent = ((int) biased_exponent) - 1022;
+        const double significand = ldexp((double) biased_significand, -53);
         value = ldexp(significand, exponent);
     }
 
