@@ -6,6 +6,11 @@ dist: xenial
 language: python
 python: 3.7
 
+matrix:
+  include:
+    - env: CC=gcc
+    - env: CC=clang
+
 before_install:
   - wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip
   - unzip ninja-linux.zip -d ninja
@@ -13,12 +18,9 @@ before_install:
   - chmod 755 ninja/ninja
   - pip install meson
 
-matrix:
-  include:
-    - env: CC=gcc
-    - env: CC=clang
+install:
+  - meson build --warnlevel=3 --werror
 
 script:
-  - meson build --warnlevel=3 --werror
   - meson test -C build --print-errorlogs
 
