@@ -13,7 +13,8 @@ int main(void) {
         0x3f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     };
 
-    idx_assert(idx_get_double(data, 0) == 1.0);
+    const double expected = 1.0;
+    idx_assert(idx_get_double(data, 0) == expected);
 
     return 0;
 }
