@@ -6,6 +6,8 @@
 
 #include "idx_test.h"
 
+#include <math.h>
+
 
 int main(void) {
     const uint8_t data[] = {
