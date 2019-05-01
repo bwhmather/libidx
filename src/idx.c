@@ -126,7 +126,41 @@ static inline int32_t idx_read_int32(const uint8_t bytes[4]) {
 }
 
 static inline float idx_read_float(const uint8_t bytes[4]) {
-    return (float) idx_read_uint32(bytes);
+    bool negative = (bytes[0] & 0x80) == 0x80;
+
+    uint_fast8_t biased_exponent = (uint_fast8_t) (
+        ((uint_fast8_t) (bytes[0] & 0x7f) << 1) |
+        ((uint_fast8_t) (bytes[1] & 0x80) >> 7)
+    );
+
+    uint_fast32_t biased_significand = (uint_fast32_t) (
+        ((uint_fast32_t) (bytes[1] & 0x7f) << 16) |
+        ((uint_fast32_t) bytes[2] << 8) |
+        ((uint_fast32_t) bytes[3] << 0)
+    );
+
+    float value;
+
+    if (biased_exponent == 0xff) {
+        if (biased_significand == 0) {
+            value = INFINITY;
+        } else {
+            value = NAN;
+        }
+    } else if (biased_exponent == 0) {
+        const int exponent = -125;
+        const float significand = ldexpf((float) biased_significand, -24);
+        value = ldexpf(significand, exponent);
+    } else {
+        biased_significand |= 0x800000;
+        const int exponent = ((int) biased_exponent) - 126;
+        const float significand = ldexpf((float) biased_significand, -24);
+        value = ldexpf(significand, exponent);
+    }
+
+    value = copysignf(value, negative ? -1.0 : 1.0);
+
+    return value;
 }
 
 static inline double idx_read_double(const uint8_t bytes[8]) {
