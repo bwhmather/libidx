@@ -158,7 +158,7 @@ static inline double idx_read_double(const uint8_t bytes[8]) {
     } else if (biased_exponent == 0) {
         const int exponent = -1021;
         const double significand = ldexp((double) biased_significand, -53);
-        value = ldexp(significand, - 1021);
+        value = ldexp(significand, exponent);
     } else {
         biased_significand |= 0x10000000000000;
         const int exponent = ((int) biased_exponent) - 1022;
