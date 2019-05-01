@@ -216,7 +216,55 @@ static inline void idx_write_int32(int32_t value, uint8_t bytes[4]) {
 }
 
 static inline void idx_write_float(float value, uint8_t bytes[4]) {
-    assert(false);
+    uint_fast32_t biased_significand;
+    uint_fast8_t biased_exponent;
+
+    bool negative = signbit(value) ? true : false;
+
+    if (isnan(value)) {
+        // TODO distinguish between quiet and signalling NaNs.
+        biased_exponent = 0xff;
+        biased_significand = 0x01;
+
+    } else if (isinf(value)) {
+        biased_exponent = 0xff;
+        biased_significand = 0x00;
+
+    } else {
+        int exponent = 0;
+        float significand = frexp(fabs(value), &exponent);
+
+        if (exponent < -125) {
+            // Value is sub-normal.
+            biased_significand = (uint_fast64_t) truncf(ldexpf(
+                significand, 24 + (exponent + 125)
+            ));
+            biased_exponent = 0;
+        } else {
+            // Value is normalized.
+            biased_significand = (uint_fast32_t) truncf(ldexpf(
+                significand, 24
+            ));
+            biased_exponent = (uint_fast8_t) (exponent + 126);
+        }
+
+        if (biased_significand == 0) {
+            biased_exponent = 0;
+        }
+    }
+
+    // Write sign bit.
+    bytes[0] = negative ? 0x80 : 0x00;
+
+    // Write exponent.
+    bytes[0] |= (biased_exponent >> 1) & 0x7f;
+    bytes[1] = (biased_exponent << 7) & 0x80;
+
+    // Write significand.
+    bytes[1] |= (biased_significand >> 16) & 0x7f;
+    bytes[2] = (biased_significand >> 8) & 0xff;
+    bytes[3] = (biased_significand >> 0) & 0xff;
+
 }
 
 static inline void idx_write_double(double value, uint8_t bytes[8]) {
