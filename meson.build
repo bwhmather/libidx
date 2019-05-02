@@ -173,6 +173,11 @@ test_suites = {
     'uint8',
     'unknown',
   ],
+  'integration': [
+    'roundtrip_pi_double',
+    'roundtrip_int8_0d',
+    'roundtrip_uint8_0d',
+  ],
 }
 
 foreach suite, tests : test_suites
