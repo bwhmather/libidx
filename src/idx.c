@@ -98,7 +98,11 @@ static inline uint8_t idx_read_uint8(const uint8_t bytes[1]) {
 }
 
 static inline int8_t idx_read_int8(const uint8_t bytes[1]) {
-    return (int8_t) bytes[0];
+    int8_t value = bytes[0] & 0x7f;
+    if (bytes[0] & 0x80) {
+        value -= 128;
+    }
+    return value;
 }
 
 static inline uint16_t idx_read_uint16(const uint8_t bytes[2]) {
