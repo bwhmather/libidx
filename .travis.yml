@@ -9,7 +9,24 @@ python: 3.7
 matrix:
   include:
     - env: CC=gcc
+      install:
+        - meson setup build --warnlevel=3 --werror -Db_sanitize=memory
+    - env: CC=gcc
+      install:
+        - meson setup build --warnlevel=3 --werror -Db_sanitize=address
+    - env: CC=gcc
+      install:
+        - meson setup build --warnlevel=3 --werror -Db_sanitize=undefined
+
     - env: CC=clang
+      install:
+        - meson setup build --warnlevel=3 --werror -Db_sanitize=memory
+    - env: CC=clang
+      install:
+        - meson setup build --warnlevel=3 --werror -Db_sanitize=address
+    - env: CC=clang
+      install:
+        - meson setup build --warnlevel=3 --werror -Db_sanitize=undefined
 
 before_install:
   - wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip
@@ -17,9 +34,6 @@ before_install:
   - export PATH="$PWD/ninja:$PATH"
   - chmod 755 ninja/ninja
   - pip install meson
-
-install:
-  - meson build --warnlevel=3 --werror
 
 script:
   - meson test -C build --print-errorlogs
