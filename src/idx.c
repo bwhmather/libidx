@@ -112,8 +112,15 @@ static inline uint16_t idx_read_uint16(const uint8_t bytes[2]) {
     );
 }
 
-static inline int16_t idx_read_int16(const uint8_t bytes[4]) {
-    return (int16_t) idx_read_uint16(bytes);
+static inline int16_t idx_read_int16(const uint8_t bytes[2]) {
+    int16_t value = (
+        (((uint16_t) (bytes[0] & 0x7f)) << 8) |
+        (((uint16_t) (bytes[1] & 0xff)) << 0)
+    );
+    if (bytes[0] & 0x80) {
+        value -= 32768;
+    }
+    return value;
 }
 
 static inline uint32_t idx_read_uint32(const uint8_t bytes[4]) {
