@@ -6,18 +6,6 @@
 
 #include "idx_test.h"
 
-/**
- * LCG random number generator.
- * See http://en.wikipedia.org/wiki/Linear_congruential_generator.
- */
-static uint8_t idx_rnd(uint32_t *state) {
-    const uint32_t A = 1664525;
-    const uint32_t C = 1013904223;
-
-    *state = A * (*state) + C;
-    return (uint8_t) (((*state) >> 24) & 0xff);
-}
-
 
 int main(void) {
     uint8_t header[] = {
@@ -34,8 +22,11 @@ int main(void) {
     // Initialize the array with pseudo random data.
     uint32_t state = 0;
     for (size_t i = 0; i < 0x0155330f; i++) {
-        data[2 * i + 8] = idx_rnd(&state);
-        data[2 * i + 9] = idx_rnd(&state);
+        uint8_t msb = idx_rnd(&state);
+        uint8_t lsb = idx_rnd(&state);
+
+        data[2 * i + 8] = msb;
+        data[2 * i + 9] = lsb;
     }
 
     // Check that `idx_get_int8` returns the expected value for every index in

@@ -7,14 +7,6 @@
 #include "idx_test.h"
 
 
-/**
- * Multiplier and increment for LCG random number generator.
- * See http://en.wikipedia.org/wiki/Linear_congruential_generator.
- */
-#define A 1664525
-#define C 1013904223
-
-
 int main(void) {
     uint8_t header[] = {
         0x00, 0x00, 0x08, 0x01,
@@ -30,16 +22,14 @@ int main(void) {
     // Initialize the array with pseudo random data.
     uint32_t state = 0;
     for (size_t i = 0; i < 0x0155330f; i++) {
-        state = A * state + C;
-        data[i + 8] = (state >> 24) & 0xff;
+        data[i + 8] = idx_rnd(&state);
     }
 
     // Check that `idx_get_uint8` returns the expected value for every index in
     // the array.
     state = 0;
     for (size_t i = 0; i < 0x0155330f; i++) {
-        state = A * state + C;
-        uint8_t expected = (state >> 24) & 0xff;
+        uint8_t expected = idx_rnd(&state);
 
         idx_assert(idx_get_uint8(data, 1, i) == expected);
     }

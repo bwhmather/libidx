@@ -43,3 +43,17 @@ static inline void idx_test_on_sigabrt(int signal) {
         abort();                                                            \
     }                                                                       \
 } while(0)
+
+
+/**
+ * LCG random number generator.
+ * See http://en.wikipedia.org/wiki/Linear_congruential_generator.
+ */
+static inline uint8_t idx_rnd(uint32_t *state) {
+    const uint32_t A = 1664525;
+    const uint32_t C = 1013904223;
+
+    *state = A * (*state) + C;
+    return (uint8_t) (((*state) >> 24) & 0xff);
+}
+
