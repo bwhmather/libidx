@@ -10,9 +10,6 @@ matrix:
   include:
     - env: CC=gcc
       install:
-        - meson setup build --warnlevel=3 --werror -Db_sanitize=memory
-    - env: CC=gcc
-      install:
         - meson setup build --warnlevel=3 --werror -Db_sanitize=address
     - env: CC=gcc
       install:
@@ -20,13 +17,13 @@ matrix:
 
     - env: CC=clang
       install:
-        - meson setup build --warnlevel=3 --werror -Db_sanitize=memory
+        - meson setup build --warnlevel=3 --werror -Db_sanitize=memory -Db_lundef=false
     - env: CC=clang
       install:
-        - meson setup build --warnlevel=3 --werror -Db_sanitize=address
+        - meson setup build --warnlevel=3 --werror -Db_sanitize=address -Db_lundef=false
     - env: CC=clang
       install:
-        - meson setup build --warnlevel=3 --werror -Db_sanitize=undefined
+        - meson setup build --warnlevel=3 --werror -Db_sanitize=undefined -Db_lundef=false
 
 before_install:
   - wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip
