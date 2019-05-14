@@ -23,7 +23,7 @@ int main(void) {
     };
 
     uint8_t *data = (uint8_t *) calloc(
-        sizeof(uint8_t), 0x5533 * 0x330f + 8
+        sizeof(uint8_t), 0x5533 * 0x330f + 12
     );
     idx_assert(data != NULL);
 
@@ -33,8 +33,9 @@ int main(void) {
     // Initialize the array with pseudo random data.
     uint32_t state = 0;
     for (size_t i = 0; i < 0x5533 * 0x330f; i++) {
-        state = A * state + C;
-        data[i + 12] = (state >> 24) & 0xff;
+        uint8_t byte = idx_rnd(&state);
+
+        data[i + 12] = byte;
     }
 
     // Check that `idx_get_uint8` returns the expected value for every index in
@@ -42,8 +43,7 @@ int main(void) {
     state = 0;
     for (size_t u = 0; u < 0x5533; u++) {
         for (size_t v = 0; v < 0x330f; v++) {
-            state = A * state + C;
-            uint8_t expected = (state >> 24) & 0xff;
+            uint8_t expected = idx_rnd(&state);
 
             idx_assert(idx_get_uint8(data, 2, u, v) == expected);
         }
