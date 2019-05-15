@@ -33,5 +33,5 @@ before_install:
   - pip install meson
 
 script:
-  - meson test -C build --print-errorlogs
+  - meson test -C build --print-errorlogs --timeout-multiplier=10
 
