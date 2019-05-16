@@ -5,6 +5,40 @@ LibIDX
 
 A C library for reading and writing files in the IDX format, as used for the `MNIST data-set`_.
 
+Installation
+============
+
+LibIDX is written in C99, and depends only on the C standard library, including
+libm if you are on linux.
+
+It can be built and installed using the `Meson <mesonbuild.com>`_ build system.
+
+To setup a new build directory:
+
+.. code:: sh
+
+    $ meson setup build --warnlevel=3 --prefix=/usr/local
+
+
+Run tests by calling:
+
+.. code:: sh
+
+    $ meson test -C build --print-errorlogs
+
+There should be no warnings and no failures.  If you do see any warnings,
+please report them as a bug.  For development, pass ``--werror`` to
+``meson setup`` to make sure that you don't miss any.
+
+Assuming that the build is successful and the tests pass, install by running:
+
+.. code:: sh
+
+    $ meson install
+
+Alternatively, you can copy and paste ``include/idx.h`` and ``src/idx.c`` into
+your project and build using project build system.
+
 
 Usage
 =====
