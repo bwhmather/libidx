@@ -13,7 +13,7 @@ int main(void) {
         0x80, 0x00, 0x00, 0x00,
     };
 
-    idx_assert(idx_get_int32(data, 0) == -0x80000000);
+    idx_assert(idx_get_int32(data, 0) == -((long) 0x80000000));
 
     return 0;
 }
