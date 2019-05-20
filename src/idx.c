@@ -133,7 +133,16 @@ static inline uint32_t idx_read_uint32(const uint8_t bytes[4]) {
 }
 
 static inline int32_t idx_read_int32(const uint8_t bytes[4]) {
-    return (int32_t) idx_read_uint32(bytes);
+    int32_t value = (
+        (((int32_t) (bytes[0] & 0x7f)) << 24) |
+        (((int32_t) (bytes[1] & 0xff)) << 16) |
+        (((int32_t) (bytes[2] & 0xff)) << 8) |
+        (((int32_t) (bytes[3] & 0xff)) << 0)
+    );
+    if (bytes[0] & 0x80) {
+        value -= 0x80000000;
+    }
+    return value;
 }
 
 static inline float idx_read_float(const uint8_t bytes[4]) {
