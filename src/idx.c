@@ -232,8 +232,10 @@ static inline void idx_write_uint8(uint8_t value, uint8_t bytes[1]) {
 static inline void idx_write_int8(int8_t value, uint8_t bytes[1]) {
     uint8_t twos_complement;
 
-    if (value < 0) {
-        twos_complement = (0xff - (uint8_t) abs((int) value)) + 1;
+    if (value == INT8_MIN) {
+        twos_complement = 0x80;
+    } else if (value < 0) {
+        twos_complement = ~((uint8_t) -value) + 1;
     } else {
         twos_complement = (uint8_t) value;
     }
