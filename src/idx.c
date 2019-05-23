@@ -240,7 +240,7 @@ static inline void idx_write_int8(int8_t value, uint8_t bytes[1]) {
         twos_complement = (uint8_t) value;
     }
 
-    idx_write_uint8(twos_complement, bytes);
+    bytes[0] = twos_complement;
 }
 
 static inline void idx_write_uint16(uint16_t value, uint8_t bytes[2]) {
@@ -251,13 +251,16 @@ static inline void idx_write_uint16(uint16_t value, uint8_t bytes[2]) {
 static inline void idx_write_int16(int16_t value, uint8_t bytes[2]) {
     uint16_t twos_complement;
 
-    if (value < 0) {
-        twos_complement = (0xffff - (uint16_t) abs((int) value)) + 1;
+    if (value == INT16_MIN) {
+        twos_complement = 0x8000;
+    } else if (value < 0) {
+        twos_complement = ~((uint16_t) abs(value)) + 1;
     } else {
         twos_complement = (uint16_t) value;
     }
 
-    idx_write_uint16((uint16_t) twos_complement, bytes);
+    bytes[0] = (twos_complement >> 8) & 0xff;
+    bytes[1] = (twos_complement >> 0) & 0xff;
 }
 
 static inline void idx_write_uint32(uint32_t value, uint8_t bytes[4]) {
@@ -268,7 +271,20 @@ static inline void idx_write_uint32(uint32_t value, uint8_t bytes[4]) {
 }
 
 static inline void idx_write_int32(int32_t value, uint8_t bytes[4]) {
-    idx_write_uint32((uint32_t) value, bytes);
+    uint32_t twos_complement;
+
+    if (value == INT32_MIN) {
+        twos_complement = 0x80000000;
+    } else if (value < 0) {
+        twos_complement = ~((uint32_t) labs(value)) + 1;
+    } else {
+        twos_complement = (uint32_t) value;
+    }
+
+    bytes[0] = (twos_complement >> 24) & 0xff;
+    bytes[1] = (twos_complement >> 16) & 0xff;
+    bytes[2] = (twos_complement >> 8) & 0xff;
+    bytes[3] = (twos_complement >> 0) & 0xff;
 }
 
 static inline void idx_write_float(float value, uint8_t bytes[4]) {
