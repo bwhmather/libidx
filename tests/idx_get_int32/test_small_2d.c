@@ -34,12 +34,12 @@ int main(void) {
     idx_assert(idx_get_int32(data, 2, 0, 1) == 0x02);
     idx_assert(idx_get_int32(data, 2, 1, 1) == 0x06);
     idx_assert(idx_get_int32(data, 2, 2, 1) == 0x0a);
-    idx_assert_aborts(idx_get_int32(data, 2, 3, 0));
+    idx_assert_aborts(idx_get_int32(data, 2, 3, 1));
 
     idx_assert(idx_get_int32(data, 2, 0, 2) == 0x03);
     idx_assert(idx_get_int32(data, 2, 1, 2) == 0x07);
     idx_assert(idx_get_int32(data, 2, 2, 2) == 0x0b);
-    idx_assert_aborts(idx_get_int32(data, 2, 3, 0));
+    idx_assert_aborts(idx_get_int32(data, 2, 3, 2));
 
     idx_assert(idx_get_int32(data, 2, 0, 3) == 0x04);
     idx_assert(idx_get_int32(data, 2, 1, 3) == 0x08);
