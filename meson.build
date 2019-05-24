@@ -141,6 +141,7 @@ test_suites = {
     'min_neg_subnormal_0d',
     'pos_inf_0d',
     'neg_inf_0d',
+    'qnan_0d',
   ],
   'idx_set_double': [
     'pos_one_0d',
@@ -174,6 +175,7 @@ test_suites = {
     'min_neg_subnormal_0d',
     'pos_inf_0d',
     'neg_inf_0d',
+    'qnan_0d',
   ],
   'idx_init': [
     'double_0d',
