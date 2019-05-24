@@ -294,9 +294,10 @@ static inline void idx_write_float(float value, uint8_t bytes[4]) {
     bool negative = signbit(value) ? true : false;
 
     if (isnan(value)) {
-        // TODO distinguish between quiet and signalling NaNs.
+        // C doesn't provide a way to distinguish between quiet and signalling
+        // NaNs, so we treat all NaNs as quiet.
         biased_exponent = 0xff;
-        biased_significand = 0x01;
+        biased_significand = 0x400000;
 
     } else if (isinf(value)) {
         biased_exponent = 0xff;
@@ -353,9 +354,10 @@ static inline void idx_write_double(double value, uint8_t bytes[8]) {
     bool negative = signbit(value) ? true : false;
 
     if (isnan(value)) {
-        // TODO distinguish between quiet and signalling NaNs.
+        // C doesn't provide a way to distinguish between quiet and signalling
+        // NaNs, so we treat all NaNs as quiet.
         biased_exponent = 0x7ff;
-        biased_significand = 0x01;
+        biased_significand = 0x8000000000000;
 
     } else if (isinf(value)) {
         biased_exponent = 0x7ff;
