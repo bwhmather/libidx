@@ -203,6 +203,7 @@ test_suites = {
     'unsupported_0d',
     'overflow_uint8',
     'overflow_int16',
+    'too_many_dims',
   ],
   'idx_type': [
     'double',
