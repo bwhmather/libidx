@@ -216,6 +216,7 @@ test_suites = {
     'too_short_for_bounds',
     'too_short_for_data_1d',
     'too_short_for_data_3d',
+    'overallocated_uint8',
     'overflow_uint8',
     'overflow_int16',
     'bad_padding',
