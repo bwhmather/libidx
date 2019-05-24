@@ -225,6 +225,7 @@ test_suites = {
     'overflow_uint8',
     'overflow_int16',
     'bad_padding',
+    'unsupported_types',
   ],
   'idx_type_supported': [
     'double',
