@@ -195,6 +195,13 @@ or passing an index that exceeds the bounds of the corresponding dimension will
 cause `libidx` to abort the process.  These constraints can all be checked in
 advance so there is no excuse.
 
+C does not provide a safe way to distinguish between quiet and signalling NaNs.
+When reading, all NaNs will be mapped to the value defined by the ``NAN`` macro
+in `math.h`.  When writing, all NaNs are treated as quiet and encoded by
+setting only the most significant bit of the significand to one.
+Attempting to do anything else would be unsafe as how the significand bits of a
+NaN are interpreted is implementation defined.
+
 .. code:: c
 
     uint8_t idx_get_uint8(const void *data, int ndims, ...);
