@@ -89,7 +89,6 @@ code will be returned for the same invalid data.  More values may be added in
 future to improve error reporting, but this should not affect the ABI.
 
 The currently exported error codes are as follows:
-
   - ``IDX_NO_ERROR``:  Indicates that the data was found to be valid.
   - ``IDX_ERROR_TRUNCATED``:  Indicates that the buffer in which an idx
     data-structure is meant to be stored is shorter than needed.
