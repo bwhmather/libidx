@@ -3,7 +3,8 @@ LibIDX
 
 |build-status| |coverage|
 
-A C library for reading and writing files in the IDX format, as used for the `MNIST data-set`_.
+A C library for reading and writing files in the IDX format, as used for the
+`MNIST data-set`_.
 
 Installation
 ============
@@ -111,7 +112,8 @@ handle error codes individually.  Other error codes should be passed to
 
 `idx_error_string` returns a pointer to a static null terminated string
 containing the human readable name for a particular error code.  If the error
-code is not recognized will return "unknown error".  All strings are noun phrases with no capitalisation and no terminating full stop or newline.
+code is not recognized will return "unknown error".  All strings are noun
+phrases with no capitalisation and no terminating full stop or newline.
 
 
 Reading and writing
@@ -235,7 +237,8 @@ do not match those requested, or if the requested element is out of bounds.
 License
 -------
 
-The project is made available under the MIT license.  See `LICENSE`_ for details.
+The project is made available under the MIT license.  See `LICENSE`_ for
+details.
 
 
 .. |build-status| image:: https://travis-ci.org/bwhmather/libidx.png?branch=develop
