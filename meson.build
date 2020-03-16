@@ -17,6 +17,18 @@ lib = both_libraries(
   install : true,
 )
 
+
+### Examples ###
+
+test_exe = executable(
+  'idx-validate',
+  'examples/validate.c',
+  include_directories : includes,
+  link_with : lib,
+  install : false,
+)
+
+
 ### Tests ###
 test_includes = include_directories('include', 'tests')
 
